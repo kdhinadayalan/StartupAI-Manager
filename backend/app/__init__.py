@@ -1,0 +1,1 @@
+# StartupAI Manager Backend Application

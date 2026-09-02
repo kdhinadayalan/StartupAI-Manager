@@ -1,0 +1,73 @@
+services:
+  # 1. PostgreSQL Database with Persistent Storage
+  postgres:
+    image: postgres:16-alpine
+    container_name: startupai_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword_dev_change_in_prod
+      POSTGRES_DB: startup_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d startup_ai"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 2. Redis Session Accelerator & Rate Limiter
+  redis:
+    image: redis:7-alpine
+    container_name: startupai_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # 3. FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: startupai_backend
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "False"
+      DATABASE_URL: postgresql+psycopg2://postgres:postgrespassword_dev_change_in_prod@postgres:5432/startup_ai
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: startupai-production-super-secret-key-replace-in-real-deployment
+      API_V1_PREFIX: /api/v1
+      BACKEND_CORS_ORIGINS: '["http://localhost", "http://localhost:3000", "http://localhost:80"]'
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # 4. React Frontend (Nginx SPA)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: startupai_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
