@@ -3,7 +3,7 @@ import { useWorkspace } from '../../context/WorkspaceContext';
 import { Button } from '../common/Button';
 import { Input } from '../common/Input';
 import { Badge } from '../common/Badge';
-import { Briefcase, ChevronDown, Plus, X } from 'lucide-react';
+import { Briefcase, ChevronDown, Plus, X, AlertCircle } from 'lucide-react';
 
 export const WorkspaceSelector: React.FC = () => {
   const { currentWorkspace, workspaces, selectWorkspace, createWorkspace, currentRole } = useWorkspace();
@@ -13,10 +13,19 @@ export const WorkspaceSelector: React.FC = () => {
   const [description, setDescription] = useState('');
   const [industry, setIndustry] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    setError(null);
+    if (!name.trim()) {
+      setError('Startup Name is required. Please scroll up and enter a name.');
+      return;
+    }
+    if (name.trim().length < 2) {
+      setError('Startup Name must be at least 2 characters long.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await createWorkspace({
@@ -27,9 +36,11 @@ export const WorkspaceSelector: React.FC = () => {
       setName('');
       setDescription('');
       setIndustry('');
+      setError(null);
       setIsModalOpen(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to create workspace:', err);
+      setError(err?.message || 'Failed to create workspace. Please check your connection.');
     } finally {
       setIsSubmitting(false);
     }
@@ -86,6 +97,7 @@ export const WorkspaceSelector: React.FC = () => {
                 className="w-full text-xs text-brand-400 hover:text-brand-300 justify-start"
                 onClick={() => {
                   setIsOpen(false);
+                  setError(null);
                   setIsModalOpen(true);
                 }}
               >
@@ -98,24 +110,37 @@ export const WorkspaceSelector: React.FC = () => {
 
       {/* Create Workspace Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm p-4 flex min-h-full items-center justify-center">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative my-auto">
             <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-5">
-              <h3 className="text-base font-bold text-white">Create Startup Workspace</h3>
+              <div>
+                <h3 className="text-base font-bold text-white">Create Startup Workspace</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Initialize an isolated workspace for your startup</p>
+              </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors"
+                className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-4">
+              {error && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <Input
-                label="Startup Name"
+                label="Startup Name *"
                 placeholder="e.g. NextGen Robotics"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (error) setError(null);
+                }}
                 required
                 autoFocus
               />
