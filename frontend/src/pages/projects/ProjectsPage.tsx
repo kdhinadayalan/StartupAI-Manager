@@ -6,6 +6,7 @@ import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { EmptyWorkspaceState } from '../../components/common/EmptyWorkspaceState';
 import {
   FolderKanban,
   Plus,
@@ -16,6 +17,7 @@ import {
   Trash2,
   X,
   Clock,
+  AlertCircle,
 } from 'lucide-react';
 
 export const ProjectsPage: React.FC = () => {
@@ -34,6 +36,7 @@ export const ProjectsPage: React.FC = () => {
   const [budget, setBudget] = useState<string>('');
   const [deadline, setDeadline] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const canCreateProject =
     currentRole === 'OWNER' || currentRole === 'ADMIN' || currentRole === 'MANAGER';
@@ -61,7 +64,12 @@ export const ProjectsPage: React.FC = () => {
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!currentWorkspace || !name.trim()) return;
+    setError(null);
+    if (!currentWorkspace) return;
+    if (!name.trim()) {
+      setError('Project Name is required.');
+      return;
+    }
     setIsSubmitting(true);
     try {
       await projectApi.create(currentWorkspace.id, {
@@ -76,10 +84,12 @@ export const ProjectsPage: React.FC = () => {
       setDescription('');
       setBudget('');
       setDeadline('');
+      setError(null);
       setIsCreateOpen(false);
       fetchProjects();
     } catch (err: any) {
-      alert(err.message || 'Failed to create project.');
+      console.error('Failed to create project:', err);
+      setError(err?.message || 'Failed to create project.');
     } finally {
       setIsSubmitting(false);
     }
@@ -112,9 +122,10 @@ export const ProjectsPage: React.FC = () => {
 
   if (!currentWorkspace) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-400 text-sm">Please select or create a startup workspace first.</p>
-      </div>
+      <EmptyWorkspaceState
+        title="No Startup Workspace Active"
+        description="Please select or create a startup workspace to manage projects, strategic milestones, and budgets."
+      />
     );
   }
 
@@ -260,21 +271,41 @@ export const ProjectsPage: React.FC = () => {
 
       {/* Create Project Modal */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+        <div
+          className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) {
+              setIsCreateOpen(false);
+            }
+          }}
+        >
+          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
               <h3 className="text-base font-bold text-white">Create New Project</h3>
-              <button onClick={() => setIsCreateOpen(false)} className="text-slate-400 hover:text-white">
+              <button
+                onClick={() => setIsCreateOpen(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-4">
+              {error && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center gap-2.5 animate-in fade-in">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+
               <Input
-                label="Project Name"
+                label="Project Name *"
                 placeholder="e.g. Mobile App MVP"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (error) setError(null);
+                }}
                 required
                 autoFocus
               />

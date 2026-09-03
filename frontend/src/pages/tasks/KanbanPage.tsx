@@ -7,6 +7,7 @@ import { Project } from '../../types/project';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { EmptyWorkspaceState } from '../../components/common/EmptyWorkspaceState';
 import {
   CheckSquare,
   Plus,
@@ -199,9 +200,10 @@ export const KanbanPage: React.FC = () => {
 
   if (!currentWorkspace) {
     return (
-      <div className="text-center py-12 text-slate-400 text-sm">
-        Please select or create a startup workspace first.
-      </div>
+      <EmptyWorkspaceState
+        title="No Startup Workspace Active"
+        description="Select or create a startup workspace to manage initiatives, Kanban board tasks, and team assignments."
+      />
     );
   }
 
@@ -344,8 +346,13 @@ export const KanbanPage: React.FC = () => {
 
       {/* Task Details Drawer / Modal */}
       {activeTask && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl p-6 shadow-2xl relative flex flex-col max-h-[90vh]">
+        <div
+          className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setActiveTask(null);
+          }}
+        >
+          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-2xl p-6 sm:p-7 shadow-2xl relative my-auto max-h-[90vh] flex flex-col text-left">
             {/* Modal Header */}
             <div className="flex items-start justify-between pb-3 border-b border-slate-800 mb-4">
               <div>
@@ -563,8 +570,13 @@ export const KanbanPage: React.FC = () => {
 
       {/* Create Task Modal */}
       {isCreateOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+        <div
+          className="fixed inset-0 z-[100] flex min-h-screen items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !isSubmitting) setIsCreateOpen(false);
+          }}
+        >
+          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left">
             <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
               <h3 className="text-base font-bold text-white">Create New Task</h3>
               <button onClick={() => setIsCreateOpen(false)} className="text-slate-400 hover:text-white">

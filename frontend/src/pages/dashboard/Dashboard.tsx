@@ -10,6 +10,7 @@ import { UserSession } from '../../types/auth';
 import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
+import { EmptyWorkspaceState } from '../../components/common/EmptyWorkspaceState';
 import {
   Sparkles,
   TrendingDown,
@@ -110,9 +111,10 @@ export const Dashboard: React.FC = () => {
 
   if (!currentWorkspace) {
     return (
-      <div className="text-center py-16 text-slate-400 text-sm">
-        Please select or create a startup workspace to access the Executive Command Center.
-      </div>
+      <EmptyWorkspaceState
+        title="No Startup Workspace Active"
+        description="Select or create a startup workspace to access your Executive Command Center, real-time health score, and domain telemetry."
+      />
     );
   }
 

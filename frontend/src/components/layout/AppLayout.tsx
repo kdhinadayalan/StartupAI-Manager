@@ -3,6 +3,7 @@ import { Outlet, Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
+import { CreateWorkspaceModal } from './CreateWorkspaceModal';
 
 export const AppLayout: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -34,6 +35,7 @@ export const AppLayout: React.FC = () => {
           <Outlet />
         </main>
       </div>
+      <CreateWorkspaceModal />
     </div>
   );
 };

@@ -10,6 +10,8 @@ interface WorkspaceContextType {
   members: WorkspaceMember[];
   isLoading: boolean;
   currentRole: Role | null;
+  isCreateModalOpen: boolean;
+  setIsCreateModalOpen: (open: boolean) => void;
   selectWorkspace: (workspaceId: string) => void;
   createWorkspace: (payload: WorkspaceCreatePayload) => Promise<Workspace>;
   refreshWorkspaces: () => Promise<void>;
@@ -25,6 +27,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [currentRole, setCurrentRole] = useState<Role | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
   const refreshMembers = async () => {
     if (!currentWorkspace || !user) return;
@@ -107,6 +110,8 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         members,
         isLoading,
         currentRole,
+        isCreateModalOpen,
+        setIsCreateModalOpen,
         selectWorkspace,
         createWorkspace,
         refreshWorkspaces,
