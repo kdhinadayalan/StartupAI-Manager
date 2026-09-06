@@ -22,6 +22,11 @@ def get_member_membership(db: Session, workspace_id: str, user_id: str) -> Optio
     ).scalar_one_or_none()
 
 
+def get_single_company(db: Session) -> Optional[Workspace]:
+    """Retrieve the single company workspace if initialized."""
+    return db.execute(select(Workspace).order_by(Workspace.created_at.asc())).scalar_one_or_none()
+
+
 def create_workspace(
     db: Session,
     user: User,
@@ -29,7 +34,13 @@ def create_workspace(
     ip_address: Optional[str] = None,
     correlation_id: Optional[str] = None,
 ) -> Workspace:
-    """Creates a new workspace and designates creator as the OWNER."""
+    """Creates the single company workspace and designates creator as the OWNER."""
+    existing_company = get_single_company(db)
+    if existing_company:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Single-company system: A company workspace already exists. Multiple companies are not supported.",
+        )
     workspace = Workspace(
         name=html.escape(workspace_in.name.strip()),
         description=html.escape(workspace_in.description.strip()) if workspace_in.description else None,
@@ -160,7 +171,12 @@ def delete_workspace(
 ) -> bool:
     """Delete workspace (Owner-only operation)."""
     membership = get_member_membership(db, workspace_id, user_id)
-    if not membership or not check_role_permission(Role(membership.role), Permission.WORKSPACE_DELETE):
+    if not membership:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Workspace not found or access denied.",
+        )
+    if not check_role_permission(Role(membership.role), Permission.WORKSPACE_DELETE):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Only workspace Owners can delete workspaces.",
@@ -176,6 +192,7 @@ def delete_workspace(
             detail="Workspace not found.",
         )
 
+    ws_name = workspace.name
     db.delete(workspace)
     db.commit()
 
@@ -183,9 +200,10 @@ def delete_workspace(
         db=db,
         action="WORKSPACE_DELETED",
         user_id=user_id,
-        workspace_id=workspace_id,
+        workspace_id=None,
         resource_type="workspace",
         resource_id=workspace_id,
+        details={"workspace_name": ws_name, "deleted_workspace_id": workspace_id},
         ip_address=ip_address,
         correlation_id=correlation_id,
     )
@@ -224,6 +242,18 @@ def add_workspace_member(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Permission denied to invite members.",
+        )
+
+    # Privilege escalation guards
+    if invite_in.role == Role.OWNER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot assign OWNER role via invitation. The initial bootstrap user is the OWNER.",
+        )
+    if invite_in.role == Role.ADMIN and membership.role != Role.OWNER.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only the OWNER can assign or invite ADMIN members.",
         )
 
     target_user = db.execute(
@@ -302,6 +332,23 @@ def update_workspace_member_role(
             detail="Member not found in this workspace.",
         )
 
+    # Privilege escalation guards
+    if new_role == Role.OWNER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Cannot assign OWNER role. The initial bootstrap user is the OWNER.",
+        )
+    if new_role == Role.ADMIN and caller_membership.role != Role.OWNER.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only the OWNER can assign ADMIN role.",
+        )
+    if target_member.role in (Role.OWNER.value, Role.ADMIN.value) and caller_membership.role != Role.OWNER.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only the OWNER can modify OWNER or ADMIN members.",
+        )
+
     # Protect against demoting the last owner
     if target_member.role == Role.OWNER.value and new_role != Role.OWNER:
         owner_count = db.execute(
@@ -367,6 +414,12 @@ def remove_workspace_member(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Workspace owners cannot be removed directly.",
+        )
+
+    if target_member.role == Role.ADMIN.value and caller_membership.role != Role.OWNER.value:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only the OWNER can remove ADMIN members.",
         )
 
     db.delete(target_member)

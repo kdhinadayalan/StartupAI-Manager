@@ -5,6 +5,7 @@ from typing import Dict, Set
 class Role(str, Enum):
     OWNER = "OWNER"
     ADMIN = "ADMIN"
+    TEAM_LEAD = "TEAM_LEAD"
     MANAGER = "MANAGER"
     TEAM_MEMBER = "TEAM_MEMBER"
     VIEWER = "VIEWER"
@@ -102,6 +103,23 @@ ROLE_PERMISSIONS: Dict[Role, Set[Permission]] = {
         Permission.NOTIFICATION_MANAGE,
         Permission.DASHBOARD_READ,
         Permission.AUDIT_READ,
+    },
+    Role.TEAM_LEAD: {
+        Permission.WORKSPACE_READ,
+        Permission.DASHBOARD_READ,
+        Permission.PROJECT_READ,
+        Permission.TASK_CREATE,
+        Permission.TASK_READ,
+        Permission.TASK_UPDATE,
+        Permission.TASK_COMMENT,
+        Permission.REPORT_READ,
+        Permission.REPORT_GENERATE,
+        Permission.AI_QUERY,
+        Permission.NOTIFICATION_READ,
+        Permission.NOTIFICATION_MANAGE,
+        Permission.RISK_READ,
+        Permission.MARKETING_READ,
+        Permission.RESEARCH_READ,
     },
     Role.MANAGER: {
         Permission.WORKSPACE_READ,

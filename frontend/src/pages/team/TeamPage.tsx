@@ -121,19 +121,20 @@ export const TeamPage: React.FC = () => {
                   </td>
                   <td className="py-3 px-4 text-slate-400">{m.user?.email}</td>
                   <td className="py-3 px-4">
-                    {canManageMembers && m.role !== 'OWNER' ? (
+                    {canManageMembers && m.role !== 'OWNER' && (m.role !== 'ADMIN' || currentRole === 'OWNER') ? (
                       <select
                         value={m.role}
                         onChange={(e) => handleRoleChange(m.id, e.target.value as Role)}
                         className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
                       >
-                        <option value="ADMIN">ADMIN</option>
+                        {currentRole === 'OWNER' && <option value="ADMIN">ADMIN</option>}
+                        <option value="TEAM_LEAD">TEAM_LEAD</option>
                         <option value="MANAGER">MANAGER</option>
                         <option value="TEAM_MEMBER">TEAM_MEMBER</option>
                         <option value="VIEWER">VIEWER</option>
                       </select>
                     ) : (
-                      <Badge variant={m.role === 'OWNER' ? 'primary' : m.role === 'ADMIN' ? 'warning' : 'neutral'}>
+                      <Badge variant={m.role === 'OWNER' ? 'primary' : m.role === 'ADMIN' ? 'warning' : m.role === 'TEAM_LEAD' ? 'info' : m.role === 'MANAGER' ? 'success' : 'neutral'}>
                         {m.role}
                       </Badge>
                     )}
@@ -143,11 +144,11 @@ export const TeamPage: React.FC = () => {
                   </td>
                   {canManageMembers && (
                     <td className="py-3 px-4 text-right">
-                      {m.role !== 'OWNER' && (
+                      {m.role !== 'OWNER' && (m.role !== 'ADMIN' || currentRole === 'OWNER') && (
                         <button
                           onClick={() => handleRemoveMember(m.id)}
                           className="text-slate-500 hover:text-red-400 transition-colors p-1"
-                          title="Remove from workspace"
+                          title="Remove from company"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -204,10 +205,13 @@ export const TeamPage: React.FC = () => {
                   onChange={(e) => setRole(e.target.value as Role)}
                   className="w-full px-3.5 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg text-slate-100 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
                 >
-                  <option value="ADMIN">ADMIN — Full management except workspace deletion</option>
-                  <option value="MANAGER">MANAGER — Manage projects, tasks, and team workloads</option>
+                  {currentRole === 'OWNER' && (
+                    <option value="ADMIN">ADMIN — Full management except company deletion</option>
+                  )}
+                  <option value="TEAM_LEAD">TEAM_LEAD — Manage team tasks, assignments, and monitor progress</option>
+                  <option value="MANAGER">MANAGER — Manage assigned projects, tasks, and reports</option>
                   <option value="TEAM_MEMBER">TEAM_MEMBER — Update assigned tasks and add comments</option>
-                  <option value="VIEWER">VIEWER — Read-only access to workspace resources</option>
+                  <option value="VIEWER">VIEWER — Read-only access to company resources</option>
                 </select>
               </div>
 

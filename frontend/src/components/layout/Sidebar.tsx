@@ -1,5 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useWorkspace } from '../../context/WorkspaceContext';
+import { Role } from '../../types/auth';
 import {
   LayoutDashboard,
   FolderKanban,
@@ -20,32 +22,77 @@ interface NavItem {
   label: string;
   to: string;
   icon: React.ComponentType<{ className?: string }>;
+  allowedRoles?: Role[];
 }
 
 const navItems: NavItem[] = [
   { label: 'Executive Health', to: '/dashboard', icon: LayoutDashboard },
-  { label: 'AI Manager', to: '/ai-manager', icon: Bot },
-  { label: 'AI Monitoring', to: '/ai-monitoring', icon: Activity },
+  {
+    label: 'AI Manager',
+    to: '/ai-manager',
+    icon: Bot,
+    allowedRoles: ['OWNER', 'ADMIN', 'TEAM_LEAD', 'MANAGER', 'TEAM_MEMBER'],
+  },
+  {
+    label: 'AI Monitoring',
+    to: '/ai-monitoring',
+    icon: Activity,
+    allowedRoles: ['OWNER', 'ADMIN', 'MANAGER'],
+  },
   { label: 'Notifications', to: '/notifications', icon: Bell },
   { label: 'Projects', to: '/projects', icon: FolderKanban },
   { label: 'Tasks & Kanban', to: '/tasks', icon: CheckSquare },
-  { label: 'Finance & Burn', to: '/finance', icon: DollarSign },
+  {
+    label: 'Finance & Burn',
+    to: '/finance',
+    icon: DollarSign,
+    allowedRoles: ['OWNER', 'ADMIN', 'MANAGER'],
+  },
   { label: 'Marketing', to: '/marketing', icon: TrendingUp },
   { label: 'Research', to: '/research', icon: Search },
   { label: 'Risks', to: '/risks', icon: AlertTriangle },
   { label: 'Reports', to: '/reports', icon: FileText },
-  { label: 'Team', to: '/team', icon: Users },
-  { label: 'Settings & Audit', to: '/settings', icon: Settings },
+  {
+    label: 'Team',
+    to: '/team',
+    icon: Users,
+    allowedRoles: ['OWNER', 'ADMIN', 'TEAM_LEAD'],
+  },
+  {
+    label: 'Settings & Audit',
+    to: '/settings',
+    icon: Settings,
+    allowedRoles: ['OWNER', 'ADMIN'],
+  },
 ];
 
 export const Sidebar: React.FC = () => {
+  const { currentRole, currentWorkspace } = useWorkspace();
+
+  const visibleNavItems = navItems.filter((item) => {
+    if (!item.allowedRoles) return true;
+    if (currentRole) {
+      return item.allowedRoles.includes(currentRole);
+    }
+    // If workspace is active but role is still resolving, show member items
+    if (currentWorkspace) {
+      return item.allowedRoles.includes('TEAM_MEMBER');
+    }
+    return true;
+  });
+
   return (
     <aside className="w-64 border-r border-slate-800 bg-slate-900/60 flex flex-col shrink-0 min-h-[calc(100vh-4rem)]">
       <div className="p-4 flex-1 space-y-1">
-        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 mb-2">
-          Management
+        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 mb-2 flex items-center justify-between">
+          <span>Operations</span>
+          {currentRole && (
+            <span className="text-[10px] text-slate-400 font-medium normal-case tracking-normal">
+              {currentRole}
+            </span>
+          )}
         </div>
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           return (
             <NavLink

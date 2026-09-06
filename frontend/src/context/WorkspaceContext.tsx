@@ -29,17 +29,21 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
-  const refreshMembers = async () => {
-    if (!currentWorkspace || !user) return;
+  const refreshMembers = async (targetWsId?: string) => {
+    const wsId = targetWsId || currentWorkspace?.id;
+    if (!wsId || !user) return;
     try {
-      const memberList = await workspaceApi.getMembers(currentWorkspace.id);
+      const memberList = await workspaceApi.getMembers(wsId);
       setMembers(memberList);
       const myMembership = memberList.find((m) => m.user_id === user.id);
       if (myMembership) {
         setCurrentRole(myMembership.role);
+      } else {
+        setCurrentRole(null);
       }
     } catch (err) {
       console.error('Failed to load workspace members:', err);
+      setCurrentRole(null);
     }
   };
 
@@ -92,6 +96,7 @@ export const WorkspaceProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (selected) {
       setCurrentWorkspace(selected);
       localStorage.setItem('current_workspace_id', selected.id);
+      refreshMembers(selected.id);
     }
   };
 

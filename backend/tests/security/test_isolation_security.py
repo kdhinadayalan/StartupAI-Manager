@@ -25,12 +25,14 @@ def test_cross_tenant_idor_isolation(client: TestClient):
     )
     task_a_id = task_a_res.json()["data"]["id"]
 
-    # Setup Tenant B
-    user_b_token = create_user_and_login(client, "user_b@tenant-b.com", "Tenant B Owner")
+    # Setup Outsider User B
+    user_b_token = create_user_and_login(client, "user_b@outsider.com", "Outsider User")
     header_b = {"Authorization": f"Bearer {user_b_token}"}
 
+    # In single-company system, User B attempting to create second workspace is rejected
     ws_b_res = client.post("/api/v1/workspaces", headers=header_b, json={"name": "Workspace Beta"})
-    ws_b_id = ws_b_res.json()["data"]["id"]
+    assert ws_b_res.status_code == 400
+    assert "Single-company system" in ws_b_res.json()["error"]["message"]
 
     # ATTACK SCENARIO 1: User B attempts to access Workspace A directly
     res1 = client.get(f"/api/v1/workspaces/{ws_a_id}", headers=header_b)
@@ -41,8 +43,8 @@ def test_cross_tenant_idor_isolation(client: TestClient):
     res2 = client.get(f"/api/v1/workspaces/{ws_a_id}/projects/{proj_a_id}", headers=header_b)
     assert res2.status_code == 404
 
-    # ATTACK SCENARIO 3: User B attempts to pass Workspace B in URL with Project A's ID
-    res3 = client.get(f"/api/v1/workspaces/{ws_b_id}/projects/{proj_a_id}", headers=header_b)
+    # ATTACK SCENARIO 3: User B attempts to pass forged workspace ID in URL with Project A's ID
+    res3 = client.get(f"/api/v1/workspaces/00000000-0000-0000-0000-000000000000/projects/{proj_a_id}", headers=header_b)
     assert res3.status_code == 404
 
     # ATTACK SCENARIO 4: User B attempts to modify Task A

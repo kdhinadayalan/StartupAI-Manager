@@ -10,8 +10,8 @@ interface EmptyWorkspaceStateProps {
 }
 
 export const EmptyWorkspaceState: React.FC<EmptyWorkspaceStateProps> = ({
-  title = 'No Startup Workspace Active',
-  description = 'You need an active startup workspace to access initiatives, tasks, financial runway, and AI agents.',
+  title = 'No Company Initialized',
+  description = 'Initialize the company workspace to access operations, tasks, financial runway, and AI agents.',
 }) => {
   const { setIsCreateModalOpen, workspaces, selectWorkspace } = useWorkspace();
 
@@ -37,7 +37,7 @@ export const EmptyWorkspaceState: React.FC<EmptyWorkspaceStateProps> = ({
             onClick={() => setIsCreateModalOpen(true)}
           >
             <Plus className="w-4 h-4 mr-2" />
-            Create Startup Workspace
+            Initialize Company Workspace
           </Button>
 
           {workspaces.length > 0 && (

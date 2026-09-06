@@ -1,14 +1,39 @@
-import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Outlet, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useWorkspace } from '../../context/WorkspaceContext';
+import { Role } from '../../types/auth';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { CreateWorkspaceModal } from './CreateWorkspaceModal';
 
-export const AppLayout: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+// Route-level RBAC requirements based on backend permissions
+export const ROUTE_ROLE_REQUIREMENTS: Record<string, Role[]> = {
+  '/settings': ['OWNER', 'ADMIN'],
+  '/ai-monitoring': ['OWNER', 'ADMIN', 'MANAGER'],
+  '/ai-manager': ['OWNER', 'ADMIN', 'TEAM_LEAD', 'MANAGER', 'TEAM_MEMBER'],
+  '/finance': ['OWNER', 'ADMIN', 'MANAGER'],
+  '/team': ['OWNER', 'ADMIN', 'TEAM_LEAD'],
+};
 
-  if (isLoading) {
+export const AppLayout: React.FC = () => {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { currentRole, currentWorkspace, isLoading: isWorkspaceLoading } = useWorkspace();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Gracefully redirect user to /dashboard if their role in the currently active workspace
+  // does not permit accessing the current route.
+  useEffect(() => {
+    if (isWorkspaceLoading || !currentWorkspace || !currentRole) return;
+
+    const allowedRoles = ROUTE_ROLE_REQUIREMENTS[location.pathname];
+    if (allowedRoles && !allowedRoles.includes(currentRole)) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [location.pathname, currentRole, currentWorkspace?.id, isWorkspaceLoading, navigate]);
+
+  if (isAuthLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-400">
         <div className="flex flex-col items-center gap-3">

@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user
@@ -16,6 +16,8 @@ from app.schemas.workspace import (
 )
 from app.services.workspace_service import (
     create_workspace,
+    get_single_company,
+    get_member_membership,
     get_user_workspaces,
     get_workspace_detail,
     update_workspace,
@@ -57,6 +59,27 @@ def list_my_workspaces(
     """List all workspaces where authenticated user is an active member."""
     workspaces = get_user_workspaces(db=db, user_id=current_user.id)
     return SuccessResponse(data=workspaces)
+
+
+@router.get("/current", response_model=SuccessResponse[WorkspaceResponse])
+def get_current_company(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Retrieve the single company workspace if the authenticated user is a member."""
+    company = get_single_company(db)
+    if not company:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No company workspace has been initialized yet.",
+        )
+    membership = get_member_membership(db, company.id, current_user.id)
+    if not membership:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Company workspace not found or access denied.",
+        )
+    return SuccessResponse(data=company)
 
 
 @router.get("/{workspace_id}", response_model=SuccessResponse[WorkspaceResponse])

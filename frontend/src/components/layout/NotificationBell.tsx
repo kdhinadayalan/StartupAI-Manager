@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { notificationApi } from '../../api/notifications';
 import { Notification } from '../../types/notification';
@@ -16,6 +16,7 @@ import {
 export const NotificationBell: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
   const navigate = useNavigate();
+  const location = useLocation();
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [recentNotifications, setRecentNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -39,16 +40,37 @@ export const NotificationBell: React.FC = () => {
     fetchUnread();
   }, [currentWorkspace?.id]);
 
-  // Close dropdown on click outside
+  // Close dropdown on any route change
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    setIsOpen(false);
+  }, [location.pathname, location.search]);
+
+  // Close dropdown on click outside or Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   const handleMarkAllRead = async () => {
     if (!currentWorkspace) return;

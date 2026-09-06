@@ -73,9 +73,9 @@ export const CreateWorkspaceModal: React.FC = () => {
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white leading-tight">Create Startup Workspace</h3>
+              <h3 className="text-lg font-bold text-white leading-tight">Initialize Company Workspace</h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Set up an isolated multi-tenant workspace for your team and AI agents
+                Set up the AI-powered operating system for your company and team
               </p>
             </div>
           </div>
@@ -98,7 +98,7 @@ export const CreateWorkspaceModal: React.FC = () => {
           )}
 
           <Input
-            label="Startup Name *"
+            label="Company Name *"
             placeholder="e.g. Nexus AI, QuantumStream, Apex Robotics"
             value={name}
             onChange={(e) => {
@@ -142,7 +142,7 @@ export const CreateWorkspaceModal: React.FC = () => {
             <textarea
               className="w-full px-3.5 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
               rows={3}
-              placeholder="Describe your startup's core vision and deliverables..."
+              placeholder="Describe your company's core vision and deliverables..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
@@ -160,7 +160,7 @@ export const CreateWorkspaceModal: React.FC = () => {
             </Button>
             <Button variant="primary" size="sm" type="submit" isLoading={isSubmitting}>
               <Sparkles className="w-4 h-4 mr-1.5" />
-              Create Workspace
+              Initialize Company
             </Button>
           </div>
         </form>

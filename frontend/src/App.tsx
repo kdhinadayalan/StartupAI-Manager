@@ -17,6 +17,7 @@ import { ResearchPage } from './pages/research/ResearchPage';
 import { RisksPage } from './pages/risks/RisksPage';
 import { AIMonitoringPage } from './pages/monitoring/AIMonitoringPage';
 import { NotificationsPage } from './pages/notifications/NotificationsPage';
+import { SettingsPage } from './pages/settings/SettingsPage';
 import { Card } from './components/common/Card';
 import { Badge } from './components/common/Badge';
 
@@ -80,16 +81,7 @@ export const App: React.FC = () => {
                     />
                   }
                 />
-                <Route
-                  path="settings"
-                  element={
-                    <PhasePlaceholder
-                      title="Workspace Settings & Audit Log Vault"
-                      phase="Phase 5 Analytics & Monitoring"
-                      description="Workspace configuration, API credentials, and immutable security audit logs."
-                    />
-                  }
-                />
+                <Route path="settings" element={<SettingsPage />} />
               </Route>
 
               {/* Fallback */}
