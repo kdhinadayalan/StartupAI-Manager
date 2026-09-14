@@ -77,12 +77,12 @@ export const TeamPage: React.FC = () => {
     <div className="space-y-6 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Users className="w-5 h-5 text-brand-400" />
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Users className="w-5 h-5 text-brand-500 dark:text-brand-400" />
             Team & Role-Based Access Control
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Workspace: <span className="text-white font-medium">{currentWorkspace.name}</span> • RBAC strictly validated on backend
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Workspace: <span className="text-slate-900 dark:text-white font-medium">{currentWorkspace.name}</span> • RBAC strictly validated on backend
           </p>
         </div>
 
@@ -98,8 +98,8 @@ export const TeamPage: React.FC = () => {
         subtitle={`${members.length} member${members.length === 1 ? '' : 's'} with assigned roles`}
       >
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700/60">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-700/60">
               <tr>
                 <th className="py-3 px-4">Member</th>
                 <th className="py-3 px-4">Email</th>
@@ -108,24 +108,24 @@ export const TeamPage: React.FC = () => {
                 {canManageMembers && <th className="py-3 px-4 text-right">Actions</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {members.map((m) => (
-                <tr key={m.id} className="hover:bg-slate-800/30 transition-colors">
+                <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-slate-700 flex items-center justify-center font-semibold text-slate-200">
+                      <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-semibold text-slate-700 dark:text-slate-200">
                         {m.user?.full_name?.charAt(0) || 'U'}
                       </div>
-                      <span className="font-semibold text-white">{m.user?.full_name || 'Member'}</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">{m.user?.full_name || 'Member'}</span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-slate-400">{m.user?.email}</td>
+                  <td className="py-3 px-4 text-slate-500 dark:text-slate-400">{m.user?.email}</td>
                   <td className="py-3 px-4">
                     {canManageMembers && m.role !== 'OWNER' && (m.role !== 'ADMIN' || currentRole === 'OWNER') ? (
                       <select
                         value={m.role}
                         onChange={(e) => handleRoleChange(m.id, e.target.value as Role)}
-                        className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                        className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
                       >
                         {currentRole === 'OWNER' && <option value="ADMIN">ADMIN</option>}
                         <option value="TEAM_LEAD">TEAM_LEAD</option>
@@ -139,7 +139,7 @@ export const TeamPage: React.FC = () => {
                       </Badge>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-slate-400">
+                  <td className="py-3 px-4 text-slate-500 dark:text-slate-400">
                     {new Date(m.joined_at).toLocaleDateString()}
                   </td>
                   {canManageMembers && (
@@ -147,7 +147,7 @@ export const TeamPage: React.FC = () => {
                       {m.role !== 'OWNER' && (m.role !== 'ADMIN' || currentRole === 'OWNER') && (
                         <button
                           onClick={() => handleRemoveMember(m.id)}
-                          className="text-slate-500 hover:text-red-400 transition-colors p-1"
+                          className="text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors p-1"
                           title="Remove from company"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -165,21 +165,21 @@ export const TeamPage: React.FC = () => {
       {/* Invite Member Modal */}
       {isInviteOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
-            <h3 className="text-base font-bold text-white mb-2">Invite Workspace Member</h3>
-            <p className="text-xs text-slate-400 mb-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+            <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">Invite Workspace Member</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
               Enter the registered email of the user you want to add to this workspace.
             </p>
 
             {error && (
-              <div className="mb-4 p-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2">
+              <div className="mb-4 p-2.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-500 dark:text-red-400 text-xs flex items-center gap-2">
                 <Shield className="w-4 h-4 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             {success && (
-              <div className="mb-4 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+              <div className="mb-4 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 shrink-0" />
                 <span>{success}</span>
               </div>
@@ -197,13 +197,13 @@ export const TeamPage: React.FC = () => {
               />
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                   RBAC Role
                 </label>
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value as Role)}
-                  className="w-full px-3.5 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg text-slate-100 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
                 >
                   {currentRole === 'OWNER' && (
                     <option value="ADMIN">ADMIN — Full management except company deletion</option>
@@ -215,7 +215,7 @@ export const TeamPage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <Button variant="ghost" size="sm" type="button" onClick={() => setIsInviteOpen(false)}>
                   Cancel
                 </Button>

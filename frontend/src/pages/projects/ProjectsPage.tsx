@@ -19,9 +19,12 @@ import {
   Clock,
   AlertCircle,
 } from 'lucide-react';
+import { formatCurrency, getCurrencySymbol } from '../../utils/currency';
 
 export const ProjectsPage: React.FC = () => {
   const { currentWorkspace, currentRole } = useWorkspace();
+  const currencyCode = currentWorkspace?.currency || 'INR';
+  const currencySymbol = getCurrencySymbol(currencyCode);
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -134,11 +137,11 @@ export const ProjectsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <FolderKanban className="w-5 h-5 text-brand-400" />
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <FolderKanban className="w-5 h-5 text-brand-500 dark:text-brand-400" />
             Projects
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Manage startup projects, strategic deadlines, and budgets.
           </p>
         </div>
@@ -151,7 +154,7 @@ export const ProjectsPage: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 justify-between bg-slate-800/40 border border-slate-700/60 p-3 rounded-xl">
+      <div className="flex flex-col sm:flex-row items-center gap-3 justify-between bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 p-3 rounded-xl shadow-sm dark:shadow-none">
         <div className="flex items-center gap-2 w-full sm:w-72 relative">
           <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3" />
           <input
@@ -159,7 +162,7 @@ export const ProjectsPage: React.FC = () => {
             placeholder="Search projects..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-900/80 border border-slate-700 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
           />
         </div>
 
@@ -171,7 +174,7 @@ export const ProjectsPage: React.FC = () => {
               className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-colors ${
                 statusFilter === st
                   ? 'bg-brand-600 text-white font-semibold'
-                  : 'text-slate-400 hover:bg-slate-700/50 hover:text-white'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               {st || 'ALL'}
@@ -182,13 +185,13 @@ export const ProjectsPage: React.FC = () => {
 
       {/* Project Cards Grid */}
       {isLoading ? (
-        <div className="text-center py-12 text-slate-400 text-xs">Loading projects...</div>
+        <div className="text-center py-12 text-slate-500 dark:text-slate-400 text-xs">Loading projects...</div>
       ) : projects.length === 0 ? (
         <Card>
           <div className="text-center py-12">
-            <FolderKanban className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-            <h3 className="text-sm font-semibold text-white">No projects found</h3>
-            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+            <FolderKanban className="w-10 h-10 text-slate-400 dark:text-slate-600 mx-auto mb-3" />
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white">No projects found</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
               Get started by creating your first milestone or initiative.
             </p>
             {canCreateProject && (
@@ -205,33 +208,33 @@ export const ProjectsPage: React.FC = () => {
           {projects.map((proj) => (
             <div
               key={proj.id}
-              className="bg-slate-800/60 border border-slate-700/60 rounded-xl p-5 hover:border-slate-600 transition-all flex flex-col justify-between"
+              className="bg-white dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl p-5 hover:border-slate-300 dark:hover:border-slate-600 shadow-sm dark:shadow-none transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="text-sm font-bold text-white leading-snug">{proj.name}</h3>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-snug">{proj.name}</h3>
                   <Badge variant={getStatusBadgeVariant(proj.status)}>{proj.status}</Badge>
                 </div>
 
-                <p className="text-xs text-slate-400 line-clamp-2 mb-4">
+                <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-4">
                   {proj.description || 'No description provided.'}
                 </p>
 
-                <div className="space-y-2 pt-2 border-t border-slate-700/40 text-[11px] text-slate-400">
+                <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700/40 text-[11px] text-slate-500 dark:text-slate-400">
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <Clock className="w-3 h-3 text-slate-500" /> Priority
+                      <Clock className="w-3 h-3 text-slate-400 dark:text-slate-500" /> Priority
                     </span>
-                    <span className="font-semibold text-slate-200">{proj.priority}</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-200">{proj.priority}</span>
                   </div>
 
                   {proj.budget !== null && proj.budget !== undefined && (
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <DollarSign className="w-3 h-3 text-slate-500" /> Budget
+                        <DollarSign className="w-3 h-3 text-slate-400 dark:text-slate-500" /> Budget
                       </span>
-                      <span className="font-semibold text-white">
-                        ${proj.budget.toLocaleString()}
+                      <span className="font-semibold text-slate-900 dark:text-white">
+                        {formatCurrency(proj.budget, currencyCode)}
                       </span>
                     </div>
                   )}
@@ -239,9 +242,9 @@ export const ProjectsPage: React.FC = () => {
                   {proj.deadline && (
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5">
-                        <Calendar className="w-3 h-3 text-slate-500" /> Deadline
+                        <Calendar className="w-3 h-3 text-slate-400 dark:text-slate-500" /> Deadline
                       </span>
-                      <span className="text-slate-300">
+                      <span className="text-slate-700 dark:text-slate-300">
                         {new Date(proj.deadline).toLocaleDateString()}
                       </span>
                     </div>
@@ -249,15 +252,15 @@ export const ProjectsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs">
-                <span className="text-[11px] text-slate-500 flex items-center gap-1">
+              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50 flex items-center justify-between text-xs">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
                   <User className="w-3 h-3" /> {proj.owner?.full_name || 'Unassigned'}
                 </span>
 
                 {(currentRole === 'OWNER' || currentRole === 'ADMIN') && (
                   <button
                     onClick={() => handleDelete(proj.id)}
-                    className="text-slate-500 hover:text-red-400 transition-colors p-1"
+                    className="text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-colors p-1"
                     title="Delete project"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -279,12 +282,12 @@ export const ProjectsPage: React.FC = () => {
             }
           }}
         >
-          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-              <h3 className="text-base font-bold text-white">Create New Project</h3>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Create New Project</h3>
               <button
                 onClick={() => setIsCreateOpen(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -292,7 +295,7 @@ export const ProjectsPage: React.FC = () => {
 
             <form onSubmit={handleCreate} className="space-y-4">
               {error && (
-                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-400 text-xs flex items-center gap-2.5 animate-in fade-in">
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2.5 animate-in fade-in">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{error}</span>
                 </div>
@@ -311,11 +314,11 @@ export const ProjectsPage: React.FC = () => {
               />
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                   Description
                 </label>
                 <textarea
-                  className="w-full px-3.5 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
                   rows={2}
                   placeholder="Key milestones and deliverables..."
                   value={description}
@@ -325,13 +328,13 @@ export const ProjectsPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                     Initial Status
                   </label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value as ProjectStatus)}
-                    className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   >
                     <option value="PLANNING">PLANNING</option>
                     <option value="ACTIVE">ACTIVE</option>
@@ -341,13 +344,13 @@ export const ProjectsPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                     Priority
                   </label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as any)}
-                    className="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   >
                     <option value="LOW">LOW</option>
                     <option value="MEDIUM">MEDIUM</option>
@@ -359,7 +362,7 @@ export const ProjectsPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <Input
-                  label="Budget (USD)"
+                  label={`Budget (${currencySymbol})`}
                   type="number"
                   placeholder="e.g. 25000"
                   value={budget}
@@ -374,7 +377,7 @@ export const ProjectsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <Button variant="ghost" size="sm" type="button" onClick={() => setIsCreateOpen(false)}>
                   Cancel
                 </Button>

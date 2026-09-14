@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { ThemeToggle } from '../../components/common/ThemeToggle';
 import { Sparkles, Shield, Lock } from 'lucide-react';
 
 export const Register: React.FC = () => {
@@ -45,17 +46,22 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4 relative overflow-hidden">
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 relative overflow-hidden transition-colors duration-200">
+      {/* Top right Theme Toggle */}
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle showLabel />
+      </div>
 
-      <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl relative z-10 backdrop-blur-xl">
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-500/10 dark:bg-brand-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 shadow-xl dark:shadow-2xl relative z-10 backdrop-blur-xl">
         <div className="flex flex-col items-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white mb-3 shadow-lg shadow-brand-500/25">
             <Sparkles className="w-6 h-6" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Create Founder Account</h1>
-          <p className="text-xs text-slate-400 mt-1">Get started with StartupAI Manager</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Create Account</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Join your team on StartupAI Manager</p>
         </div>
 
         {error && (
@@ -72,7 +78,7 @@ export const Register: React.FC = () => {
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              placeholder="Elon Founder"
+              placeholder="e.g. Alex Vance"
               required
               autoFocus
             />
@@ -84,7 +90,7 @@ export const Register: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="founder@startup.io"
+              placeholder="name@company.com"
               required
             />
           </div>
@@ -118,16 +124,16 @@ export const Register: React.FC = () => {
           </div>
         </form>
 
-        <div className="mt-6 text-center text-xs text-slate-400">
+        <div className="mt-6 text-center text-xs text-slate-500 dark:text-slate-400">
           Already have an account?{' '}
-          <Link to="/login" className="text-brand-400 hover:text-brand-300 font-medium underline underline-offset-2">
+          <Link to="/login" className="text-brand-600 hover:text-brand-500 dark:text-brand-400 dark:hover:text-brand-300 font-medium underline underline-offset-2">
             Sign in
           </Link>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
           <span className="flex items-center gap-1">
-            <Lock className="w-3 h-3 text-brand-400" /> End-to-end zero-trust RBAC
+            <Lock className="w-3 h-3 text-brand-500 dark:text-brand-400" /> End-to-end zero-trust RBAC
           </span>
           <span>Argon2id Hashed</span>
         </div>

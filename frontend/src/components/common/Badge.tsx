@@ -12,12 +12,12 @@ export const Badge: React.FC<BadgeProps> = ({
   className = '',
 }) => {
   const variantStyles = {
-    primary: 'bg-brand-500/10 text-brand-400 border-brand-500/20',
-    info: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    success: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    warning: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    danger: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-    neutral: 'bg-slate-700/40 text-slate-300 border-slate-600/40',
+    primary: 'bg-brand-500/10 text-brand-600 dark:text-brand-400 border-brand-500/20',
+    info: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20',
+    success: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+    warning: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+    danger: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20',
+    neutral: 'bg-slate-100 dark:bg-slate-700/40 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600/40',
   };
 
   return (

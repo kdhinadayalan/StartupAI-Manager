@@ -42,10 +42,10 @@ export const financeApi = {
     return apiClient.request<FinancialAccount>(`/workspaces/${workspaceId}/finance/account`);
   },
 
-  setCash: async (workspaceId: string, balance: number, currency: string = 'USD'): Promise<FinancialAccount> => {
+  setCash: async (workspaceId: string, balance: number, currency?: string): Promise<FinancialAccount> => {
     return apiClient.request<FinancialAccount>(`/workspaces/${workspaceId}/finance/account`, {
       method: 'POST',
-      body: JSON.stringify({ balance, currency }),
+      body: JSON.stringify({ balance, ...(currency ? { currency } : {}) }),
     });
   },
 

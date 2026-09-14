@@ -28,10 +28,10 @@ export const WorkspaceSelector: React.FC = () => {
   return (
     <div
       data-testid="single-company-indicator"
-      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700/80 text-xs font-medium text-slate-200 shadow-sm"
+      className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 text-xs font-medium text-slate-700 dark:text-slate-200 shadow-sm transition-colors duration-150"
     >
-      <Building2 className="w-3.5 h-3.5 text-brand-400 shrink-0" />
-      <span className="font-semibold text-white max-w-[160px] truncate" title={currentWorkspace.name}>
+      <Building2 className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400 shrink-0" />
+      <span className="font-semibold text-slate-900 dark:text-white max-w-[160px] truncate" title={currentWorkspace.name}>
         {currentWorkspace.name}
       </span>
       {currentRole && (

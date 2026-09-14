@@ -35,7 +35,7 @@ export const AppLayout: React.FC = () => {
 
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-400">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400">
         <div className="flex flex-col items-center gap-3">
           <svg className="animate-spin h-8 w-8 text-brand-500" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -52,11 +52,11 @@ export const AppLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-150">
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
         <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6 bg-slate-900/50">
+        <main className="flex-1 overflow-y-auto p-6 bg-slate-100/60 dark:bg-slate-900/50">
           <Outlet />
         </main>
       </div>

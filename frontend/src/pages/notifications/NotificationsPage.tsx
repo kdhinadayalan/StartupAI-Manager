@@ -98,11 +98,11 @@ export const NotificationsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <Bell className="w-5 h-5 text-brand-400" />
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <Bell className="w-5 h-5 text-brand-500 dark:text-brand-400" />
             Notifications & User Alerts
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Real-time notifications for AI approvals, critical risks, budget overruns, and task assignments.
           </p>
         </div>
@@ -118,13 +118,13 @@ export const NotificationsPage: React.FC = () => {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
+      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
         <button
           onClick={() => setUnreadOnly(false)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
             !unreadOnly
-              ? 'bg-brand-600/15 text-brand-400 border border-brand-500/30'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-brand-50 dark:bg-brand-600/15 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-500/30'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           All Notifications
@@ -133,8 +133,8 @@ export const NotificationsPage: React.FC = () => {
           onClick={() => setUnreadOnly(true)}
           className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
             unreadOnly
-              ? 'bg-brand-600/15 text-brand-400 border border-brand-500/30'
-              : 'text-slate-400 hover:text-white'
+              ? 'bg-brand-50 dark:bg-brand-600/15 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-500/30'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           Unread Only
@@ -148,28 +148,28 @@ export const NotificationsPage: React.FC = () => {
             No notifications to display.
           </div>
         ) : (
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {notifications.map((n) => (
               <div
                 key={n.id}
                 className={`py-3.5 px-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
-                  !n.is_read ? 'bg-slate-800/20' : 'opacity-70'
+                  !n.is_read ? 'bg-slate-50/70 dark:bg-slate-800/20' : 'opacity-70'
                 }`}
               >
                 <div className="flex items-start gap-3 min-w-0">
-                  <div className="p-2 rounded-lg bg-slate-800 border border-slate-700/60 mt-0.5">
+                  <div className="p-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 mt-0.5">
                     {getIcon(n.type, n.severity)}
                   </div>
                   <div className="space-y-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-bold text-white text-xs">{n.title}</span>
+                      <span className="font-bold text-slate-900 dark:text-white text-xs">{n.title}</span>
                       {getSeverityBadge(n.severity)}
                       {!n.is_read && (
-                        <span className="w-2 h-2 rounded-full bg-brand-400" title="Unread" />
+                        <span className="w-2 h-2 rounded-full bg-brand-500 dark:bg-brand-400" title="Unread" />
                       )}
                     </div>
-                    <p className="text-xs text-slate-300">{n.message}</p>
-                    <span className="text-[10px] text-slate-500 block">
+                    <p className="text-xs text-slate-600 dark:text-slate-300">{n.message}</p>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
                       {new Date(n.created_at).toLocaleString()}
                     </span>
                   </div>
@@ -184,7 +184,7 @@ export const NotificationsPage: React.FC = () => {
                         if (!n.is_read) handleMarkRead(n.id);
                         navigate(n.link!);
                       }}
-                      className="text-xs text-brand-400 hover:text-brand-300"
+                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300"
                     >
                       Inspect <ExternalLink className="w-3 h-3 ml-1" />
                     </Button>

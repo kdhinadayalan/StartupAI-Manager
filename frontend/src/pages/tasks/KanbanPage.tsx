@@ -212,11 +212,11 @@ export const KanbanPage: React.FC = () => {
       {/* Header & Project Filter */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <CheckSquare className="w-5 h-5 text-brand-400" />
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <CheckSquare className="w-5 h-5 text-brand-500 dark:text-brand-400" />
             Tasks & Kanban Board
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Visual workflow management with immutable history and XSS-sanitized collaboration.
           </p>
         </div>
@@ -225,7 +225,7 @@ export const KanbanPage: React.FC = () => {
           <select
             value={selectedProjectId}
             onChange={(e) => setSelectedProjectId(e.target.value)}
-            className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
           >
             <option value="">All Projects</option>
             {projects.map((p) => (
@@ -245,7 +245,7 @@ export const KanbanPage: React.FC = () => {
 
       {/* 4-Column Kanban Board */}
       {isLoading ? (
-        <div className="text-center py-16 text-xs text-slate-400">Loading Kanban board...</div>
+        <div className="text-center py-16 text-xs text-slate-500 dark:text-slate-400">Loading Kanban board...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
           {COLUMNS.map((col, colIndex) => {
@@ -253,15 +253,15 @@ export const KanbanPage: React.FC = () => {
           return (
             <div
               key={col.id}
-              className="bg-slate-900/60 border border-slate-800 rounded-xl p-3 flex flex-col min-h-[500px]"
+              className="bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex flex-col min-h-[500px]"
             >
               {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  <span className="text-xs font-bold text-slate-700 dark:text-white uppercase tracking-wider">
                     {col.label}
                   </span>
-                  <span className="w-5 h-5 rounded-full bg-slate-800 text-slate-300 text-[11px] font-bold flex items-center justify-center">
+                  <span className="w-5 h-5 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-transparent text-[11px] font-bold flex items-center justify-center">
                     {colTasks.length}
                   </span>
                 </div>
@@ -270,7 +270,7 @@ export const KanbanPage: React.FC = () => {
               {/* Tasks List */}
               <div className="space-y-3 flex-1 overflow-y-auto max-h-[calc(100vh-16rem)] pr-1">
                 {colTasks.length === 0 ? (
-                  <div className="border border-dashed border-slate-800 rounded-lg py-8 text-center text-[11px] text-slate-600">
+                  <div className="border border-dashed border-slate-300 dark:border-slate-800 rounded-lg py-8 text-center text-[11px] text-slate-400 dark:text-slate-600">
                     No tasks
                   </div>
                 ) : (
@@ -278,10 +278,10 @@ export const KanbanPage: React.FC = () => {
                     <div
                       key={task.id}
                       onClick={() => openTaskDetails(task)}
-                      className="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/60 hover:border-brand-500/50 rounded-lg p-3.5 shadow-sm cursor-pointer transition-all space-y-2.5 group"
+                      className="bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/60 hover:border-brand-500/50 dark:hover:border-brand-500/50 rounded-lg p-3.5 shadow-sm cursor-pointer transition-all space-y-2.5 group"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="text-xs font-semibold text-white group-hover:text-brand-300 transition-colors line-clamp-2">
+                        <span className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-brand-600 dark:group-hover:text-brand-300 transition-colors line-clamp-2">
                           {task.title}
                         </span>
                         <Badge variant={getPriorityBadgeVariant(task.priority)} className="text-[10px]">
@@ -290,13 +290,13 @@ export const KanbanPage: React.FC = () => {
                       </div>
 
                       {task.description && (
-                        <p className="text-[11px] text-slate-400 line-clamp-2">{task.description}</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">{task.description}</p>
                       )}
 
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-700/40 text-[11px] text-slate-500">
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700/40 text-[11px] text-slate-500 dark:text-slate-400">
                         <div className="flex items-center gap-1.5">
                           <User className="w-3 h-3 text-slate-400" />
-                          <span className="text-slate-300 font-medium">
+                          <span className="text-slate-700 dark:text-slate-300 font-medium">
                             {task.assignee?.full_name || 'Unassigned'}
                           </span>
                         </div>
@@ -311,13 +311,13 @@ export const KanbanPage: React.FC = () => {
 
                       {/* Quick Column Shift Controls */}
                       <div
-                        className="flex items-center justify-between pt-1 text-[10px] text-slate-400"
+                        className="flex items-center justify-between pt-1 text-[10px] text-slate-500 dark:text-slate-400"
                         onClick={(e) => e.stopPropagation()}
                       >
                         {colIndex > 0 ? (
                           <button
                             onClick={() => handleStatusTransition(task, COLUMNS[colIndex - 1].id)}
-                            className="hover:text-brand-400 p-1 rounded hover:bg-slate-700/40 flex items-center gap-0.5"
+                            className="hover:text-brand-600 dark:hover:text-brand-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700/40 flex items-center gap-0.5"
                             title={`Move to ${COLUMNS[colIndex - 1].label}`}
                           >
                             <ArrowLeft className="w-3 h-3" /> {COLUMNS[colIndex - 1].id}
@@ -327,7 +327,7 @@ export const KanbanPage: React.FC = () => {
                         {colIndex < COLUMNS.length - 1 && (
                           <button
                             onClick={() => handleStatusTransition(task, COLUMNS[colIndex + 1].id)}
-                            className="hover:text-brand-400 p-1 rounded hover:bg-slate-700/40 flex items-center gap-0.5"
+                            className="hover:text-brand-600 dark:hover:text-brand-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700/40 flex items-center gap-0.5"
                             title={`Move to ${COLUMNS[colIndex + 1].label}`}
                           >
                             {COLUMNS[colIndex + 1].id} <ArrowRight className="w-3 h-3" />
@@ -352,9 +352,9 @@ export const KanbanPage: React.FC = () => {
             if (e.target === e.currentTarget) setActiveTask(null);
           }}
         >
-          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-2xl p-6 sm:p-7 shadow-2xl relative my-auto max-h-[90vh] flex flex-col text-left">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-2xl p-6 sm:p-7 shadow-2xl relative my-auto max-h-[90vh] flex flex-col text-left">
             {/* Modal Header */}
-            <div className="flex items-start justify-between pb-3 border-b border-slate-800 mb-4">
+            <div className="flex items-start justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <Badge variant={getPriorityBadgeVariant(activeTask.priority)}>
@@ -362,24 +362,24 @@ export const KanbanPage: React.FC = () => {
                   </Badge>
                   <Badge variant="primary">{activeTask.status}</Badge>
                 </div>
-                <h3 className="text-base font-bold text-white">{activeTask.title}</h3>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">{activeTask.title}</h3>
               </div>
               <button
                 onClick={() => setActiveTask(null)}
-                className="text-slate-400 hover:text-white p-1"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-800 text-xs font-semibold mb-4">
+            <div className="flex border-b border-slate-200 dark:border-slate-800 text-xs font-semibold mb-4">
               <button
                 onClick={() => setActiveTab('details')}
                 className={`pb-2 px-3 border-b-2 transition-colors ${
                   activeTab === 'details'
-                    ? 'border-brand-500 text-brand-400 font-bold'
-                    : 'border-transparent text-slate-400 hover:text-white'
+                    ? 'border-brand-500 text-brand-600 dark:text-brand-400 font-bold'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Details
@@ -388,8 +388,8 @@ export const KanbanPage: React.FC = () => {
                 onClick={() => setActiveTab('comments')}
                 className={`pb-2 px-3 border-b-2 transition-colors flex items-center gap-1.5 ${
                   activeTab === 'comments'
-                    ? 'border-brand-500 text-brand-400 font-bold'
-                    : 'border-transparent text-slate-400 hover:text-white'
+                    ? 'border-brand-500 text-brand-600 dark:text-brand-400 font-bold'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <MessageSquare className="w-3.5 h-3.5" /> Comments ({comments.length})
@@ -398,8 +398,8 @@ export const KanbanPage: React.FC = () => {
                 onClick={() => setActiveTab('history')}
                 className={`pb-2 px-3 border-b-2 transition-colors flex items-center gap-1.5 ${
                   activeTab === 'history'
-                    ? 'border-brand-500 text-brand-400 font-bold'
-                    : 'border-transparent text-slate-400 hover:text-white'
+                    ? 'border-brand-500 text-brand-600 dark:text-brand-400 font-bold'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 <History className="w-3.5 h-3.5" /> Audit History ({history.length})
@@ -409,49 +409,49 @@ export const KanbanPage: React.FC = () => {
             {/* Tab Contents */}
             <div className="flex-1 overflow-y-auto pr-1">
               {activeTab === 'details' && (
-                <div className="space-y-4 text-xs text-slate-300">
+                <div className="space-y-4 text-xs text-slate-600 dark:text-slate-300">
                   <div>
                     <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">
                       Description
                     </label>
-                    <p className="bg-slate-800/60 p-3 rounded-lg text-slate-300 leading-relaxed whitespace-pre-wrap">
+                    <p className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-transparent p-3 rounded-lg text-slate-800 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
                       {activeTask.description || 'No description provided.'}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800/80">
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200 dark:border-slate-800/80">
                     <div>
                       <span className="text-slate-500 block">Assignee</span>
-                      <span className="font-semibold text-white mt-0.5 block">
+                      <span className="font-semibold text-slate-900 dark:text-white mt-0.5 block">
                         {activeTask.assignee?.full_name || 'Unassigned'}
                       </span>
                     </div>
 
                     <div>
                       <span className="text-slate-500 block">Due Date</span>
-                      <span className="text-white mt-0.5 block">
+                      <span className="text-slate-900 dark:text-white mt-0.5 block">
                         {activeTask.due_date ? new Date(activeTask.due_date).toLocaleDateString() : 'None'}
                       </span>
                     </div>
 
                     <div>
                       <span className="text-slate-500 block">Estimated Hours</span>
-                      <span className="text-white mt-0.5 block">
+                      <span className="text-slate-900 dark:text-white mt-0.5 block">
                         {activeTask.estimated_hours || 'Not set'}
                       </span>
                     </div>
 
                     <div>
                       <span className="text-slate-500 block">Created At</span>
-                      <span className="text-white mt-0.5 block">
+                      <span className="text-slate-900 dark:text-white mt-0.5 block">
                         {new Date(activeTask.created_at).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-800 flex justify-between items-center">
+                  <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 text-xs">Move status:</span>
+                      <span className="text-slate-500 dark:text-slate-400 text-xs">Move status:</span>
                       {COLUMNS.map((c) => (
                         <button
                           key={c.id}
@@ -459,8 +459,8 @@ export const KanbanPage: React.FC = () => {
                           onClick={() => handleStatusTransition(activeTask, c.id)}
                           className={`px-2 py-1 rounded text-[11px] font-medium border ${
                             activeTask.status === c.id
-                              ? 'bg-brand-600/30 border-brand-500 text-brand-300 opacity-60'
-                              : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
+                              ? 'bg-brand-600/20 border-brand-500 text-brand-600 dark:text-brand-300 opacity-60'
+                              : 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                           }`}
                         >
                           {c.id}
@@ -491,9 +491,9 @@ export const KanbanPage: React.FC = () => {
                       </div>
                     ) : (
                       comments.map((c) => (
-                        <div key={c.id} className="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50">
+                        <div key={c.id} className="bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700/50">
                           <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-semibold text-white">
+                            <span className="text-xs font-semibold text-slate-900 dark:text-white">
                               {c.user?.full_name || 'Member'}
                             </span>
                             <div className="flex items-center gap-2">
@@ -502,27 +502,27 @@ export const KanbanPage: React.FC = () => {
                               </span>
                               <button
                                 onClick={() => handleDeleteComment(c.id)}
-                                className="text-slate-500 hover:text-red-400 p-0.5"
+                                className="text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 p-0.5"
                                 title="Delete comment"
                               >
                                 <Trash2 className="w-3 h-3" />
                               </button>
                             </div>
                           </div>
-                          <p className="text-xs text-slate-300 whitespace-pre-wrap">{c.content}</p>
+                          <p className="text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{c.content}</p>
                         </div>
                       ))
                     )}
                   </div>
 
                   {/* Add comment form */}
-                  <form onSubmit={handleAddComment} className="flex gap-2 pt-3 border-t border-slate-800">
+                  <form onSubmit={handleAddComment} className="flex gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <input
                       type="text"
                       placeholder="Add an update or comment (XSS safe)..."
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      className="flex-1 px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                      className="flex-1 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
                     />
                     <Button variant="primary" size="sm" type="submit">
                       <Send className="w-3.5 h-3.5 mr-1" /> Post
@@ -536,21 +536,21 @@ export const KanbanPage: React.FC = () => {
                   {history.map((h) => (
                     <div
                       key={h.id}
-                      className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-800/40 border border-slate-800 text-xs"
+                      className="flex items-start gap-3 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 text-xs"
                     >
-                      <span className="w-2 h-2 rounded-full bg-brand-400 mt-1.5 shrink-0" />
+                      <span className="w-2 h-2 rounded-full bg-brand-500 dark:bg-brand-400 mt-1.5 shrink-0" />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-semibold text-slate-200">{h.action}</span>
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{h.action}</span>
                           <span className="text-[10px] text-slate-500">
                             {new Date(h.created_at).toLocaleString()}
                           </span>
                         </div>
                         {h.field_changed && (
-                          <div className="text-[11px] text-slate-400 mt-0.5">
-                            Changed <span className="font-mono text-slate-300">{h.field_changed}</span> from{' '}
-                            <span className="line-through text-slate-500">{h.old_value}</span> to{' '}
-                            <span className="text-emerald-400">{h.new_value}</span>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            Changed <span className="font-mono text-slate-700 dark:text-slate-300">{h.field_changed}</span> from{' '}
+                            <span className="line-through text-slate-400 dark:text-slate-500">{h.old_value}</span> to{' '}
+                            <span className="text-emerald-600 dark:text-emerald-400">{h.new_value}</span>
                           </div>
                         )}
                         {h.user && (
@@ -576,23 +576,23 @@ export const KanbanPage: React.FC = () => {
             if (e.target === e.currentTarget && !isSubmitting) setIsCreateOpen(false);
           }}
         >
-          <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-              <h3 className="text-base font-bold text-white">Create New Task</h3>
-              <button onClick={() => setIsCreateOpen(false)} className="text-slate-400 hover:text-white">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Create New Task</h3>
+              <button onClick={() => setIsCreateOpen(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleCreateTask} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                   Project
                 </label>
                 <select
                   value={projectId}
                   onChange={(e) => setProjectId(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   required
                 >
                   {projects.map((p) => (
@@ -613,11 +613,11 @@ export const KanbanPage: React.FC = () => {
               />
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                   Description
                 </label>
                 <textarea
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
                   rows={3}
                   placeholder="Task requirements and acceptance criteria..."
                   value={description}
@@ -627,13 +627,13 @@ export const KanbanPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                     Priority
                   </label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   >
                     <option value="LOW">LOW</option>
                     <option value="MEDIUM">MEDIUM</option>
@@ -643,13 +643,13 @@ export const KanbanPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                     Assignee
                   </label>
                   <select
                     value={assigneeId}
                     onChange={(e) => setAssigneeId(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   >
                     <option value="">Unassigned</option>
                     {members.map((m) => (
@@ -678,7 +678,7 @@ export const KanbanPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <Button variant="ghost" size="sm" type="button" onClick={() => setIsCreateOpen(false)}>
                   Cancel
                 </Button>

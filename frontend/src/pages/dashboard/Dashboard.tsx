@@ -26,10 +26,12 @@ import {
   Bot,
   ExternalLink,
 } from 'lucide-react';
+import { formatCurrency } from '../../utils/currency';
 
 export const Dashboard: React.FC = () => {
   const { user, logoutAll } = useAuth();
   const { currentWorkspace, currentRole } = useWorkspace();
+  const currencyCode = currentWorkspace?.currency || 'INR';
 
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [sessions, setSessions] = useState<UserSession[]>([]);
@@ -152,30 +154,30 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* 1. STARTUP HEALTH SCORE HERO CARD */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
+      <div className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm dark:shadow-xl space-y-4 transition-colors duration-150">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Deterministic Startup Health Score
               </span>
               {summary && getHealthBadge(summary.health.grade)}
               {summary?.health.data_confidence === 'PARTIAL_DATA' && (
-                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
                   Partial Data
                 </span>
               )}
             </div>
-            <div className="text-4xl font-extrabold text-white mt-1">
+            <div className="text-4xl font-extrabold text-slate-900 dark:text-white mt-1">
               {summary?.health.health_score || 0}
-              <span className="text-lg font-normal text-slate-500"> / 100</span>
+              <span className="text-lg font-normal text-slate-400 dark:text-slate-500"> / 100</span>
             </div>
           </div>
 
           <div className="text-right sm:max-w-xs">
             {summary?.health.limitation_notice && (
-              <div className="text-[11px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 text-left flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+              <div className="text-[11px] text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 text-left flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-500 dark:text-amber-400 mt-0.5" />
                 <span>{summary.health.limitation_notice}</span>
               </div>
             )}
@@ -183,63 +185,63 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* 3 Weighted Dimensions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-800">
-          <div className="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50 space-y-1.5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-700/50 space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <CheckSquare className="w-3.5 h-3.5 text-brand-400" /> Delivery Health (40%)
+              <span className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                <CheckSquare className="w-3.5 h-3.5 text-brand-500 dark:text-brand-400" /> Delivery Health (40%)
               </span>
-              <span className="font-bold text-white">{summary?.delivery.score || 0}/100</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summary?.delivery.score || 0}/100</span>
             </div>
-            <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-brand-500 h-full rounded-full transition-all"
                 style={{ width: `${summary?.delivery.score || 0}%` }}
               />
             </div>
-            <span className="text-[10px] text-slate-400 block">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
               {summary?.delivery.completed_tasks} completed • {summary?.delivery.overdue_tasks} overdue
             </span>
           </div>
 
-          <div className="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50 space-y-1.5">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-700/50 space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-emerald-400" /> Runway Safety (35%)
+              <span className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> Runway Safety (35%)
               </span>
-              <span className="font-bold text-white">
+              <span className="font-bold text-slate-900 dark:text-white">
                 {summary?.finance.score !== null && summary?.finance.score !== undefined
                   ? `${summary.finance.score}/100`
                   : 'N/A'}
               </span>
             </div>
-            <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-emerald-500 h-full rounded-full transition-all"
                 style={{ width: `${summary?.finance.score || 0}%` }}
               />
             </div>
-            <span className="text-[10px] text-slate-400 block truncate">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block truncate">
               {summary?.finance.runway_months !== null && summary?.finance.runway_months !== undefined
                 ? `${summary.finance.runway_months} months remaining`
                 : 'Cash balance not provided'}
             </span>
           </div>
 
-          <div className="bg-slate-800/50 p-3.5 rounded-xl border border-slate-700/50 space-y-1.5">
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-700/50 space-y-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-200 flex items-center gap-1.5">
-                <Radar className="w-3.5 h-3.5 text-purple-400" /> Risk Index (25%)
+              <span className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                <Radar className="w-3.5 h-3.5 text-purple-500 dark:text-purple-400" /> Risk Index (25%)
               </span>
-              <span className="font-bold text-white">{summary?.risks.score || 0}/100</span>
+              <span className="font-bold text-slate-900 dark:text-white">{summary?.risks.score || 0}/100</span>
             </div>
-            <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+            <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
               <div
                 className="bg-purple-500 h-full rounded-full transition-all"
                 style={{ width: `${summary?.risks.score || 0}%` }}
               />
             </div>
-            <span className="text-[10px] text-slate-400 block">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 block">
               {summary?.risks.critical_count} critical • {summary?.risks.high_count} high risks
             </span>
           </div>
@@ -268,20 +270,20 @@ export const Dashboard: React.FC = () => {
             {summary.pending_approvals.map((appr) => (
               <div
                 key={appr.id}
-                className="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between gap-3 shadow-md"
+                className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col justify-between gap-3 shadow-sm transition-colors"
               >
                 <div className="space-y-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-bold text-white text-xs font-mono">{appr.action_type}</span>
+                    <span className="font-bold text-slate-900 dark:text-white text-xs font-mono">{appr.action_type}</span>
                     <Badge variant={appr.risk_level === 'HIGH' ? 'danger' : 'warning'}>
                       {appr.risk_level} RISK
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-300 line-clamp-2">{appr.explanation}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">{appr.explanation}</p>
                 </div>
 
                 {canApprove && (
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -318,10 +320,10 @@ export const Dashboard: React.FC = () => {
               <ArrowRight className="w-3 h-3 group-hover:text-brand-400 transition-colors" />
             </div>
             <div className="mt-2 text-2xl font-bold text-white">
-              ${summary?.finance.monthly_burn_rate.toLocaleString() || '0.00'}
+              {formatCurrency(summary?.finance.monthly_burn_rate, currencyCode)}
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
-              Treasury: <span className="text-emerald-400 font-semibold">${summary?.finance.current_cash_balance.toLocaleString()}</span>
+              Treasury: <span className="text-emerald-400 font-semibold">{formatCurrency(summary?.finance.current_cash_balance, currencyCode)}</span>
             </p>
           </Card>
         </Link>
@@ -336,10 +338,10 @@ export const Dashboard: React.FC = () => {
               <ArrowRight className="w-3 h-3 group-hover:text-brand-400 transition-colors" />
             </div>
             <div className="mt-2 text-2xl font-bold text-white">
-              ${summary?.marketing.total_spend.toLocaleString() || '0.00'}
+              {formatCurrency(summary?.marketing.total_spend, currencyCode)}
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
-              CAC: ${summary?.marketing.overall_cac || 0} • {summary?.marketing.total_campaigns} campaigns
+              CAC: {formatCurrency(summary?.marketing.overall_cac, currencyCode)} • {summary?.marketing.total_campaigns} campaigns
             </p>
           </Card>
         </Link>
@@ -401,8 +403,8 @@ export const Dashboard: React.FC = () => {
           <div className="text-center py-6 text-xs text-slate-400">No active sessions found.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700/60">
+            <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-700/60">
                 <tr>
                   <th className="py-2.5 px-3">Session JTI</th>
                   <th className="py-2.5 px-3">Client Info</th>
@@ -411,20 +413,20 @@ export const Dashboard: React.FC = () => {
                   <th className="py-2.5 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                 {sessions.map((session) => (
-                  <tr key={session.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-2.5 px-3 font-mono text-slate-400 truncate max-w-[180px]">
+                  <tr key={session.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="py-2.5 px-3 font-mono text-slate-500 dark:text-slate-400 truncate max-w-[180px]">
                       {session.token_jti}
                     </td>
                     <td className="py-2.5 px-3">
-                      <span className="block text-white font-medium">{session.ip_address || '127.0.0.1'}</span>
-                      <span className="text-[10px] text-slate-500 truncate block max-w-xs">{session.user_agent || 'Web Client'}</span>
+                      <span className="block text-slate-900 dark:text-white font-medium">{session.ip_address || '127.0.0.1'}</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate block max-w-xs">{session.user_agent || 'Web Client'}</span>
                     </td>
                     <td className="py-2.5 px-3">
                       {session.is_revoked ? <Badge variant="danger">Revoked</Badge> : <Badge variant="success">Active</Badge>}
                     </td>
-                    <td className="py-2.5 px-3 text-slate-400">{new Date(session.created_at).toLocaleString()}</td>
+                    <td className="py-2.5 px-3 text-slate-500 dark:text-slate-400">{new Date(session.created_at).toLocaleString()}</td>
                     <td className="py-2.5 px-3 text-right">
                       {!session.is_revoked && (
                         <Button

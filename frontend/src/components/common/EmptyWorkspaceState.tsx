@@ -17,15 +17,15 @@ export const EmptyWorkspaceState: React.FC<EmptyWorkspaceStateProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-      <Card className="max-w-md w-full text-center p-8 border-slate-700/80 shadow-2xl bg-gradient-to-b from-slate-900 to-slate-900/90 relative overflow-hidden">
+      <Card className="max-w-md w-full text-center p-8 border-slate-200 dark:border-slate-700/80 shadow-2xl bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-900/90 relative overflow-hidden">
         <div className="absolute inset-0 bg-brand-500/5 pointer-events-none" />
 
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600/20 to-indigo-500/20 border border-brand-500/30 flex items-center justify-center mx-auto mb-5 text-brand-400 shadow-xl shadow-brand-500/10">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600/20 to-indigo-500/20 border border-brand-500/30 flex items-center justify-center mx-auto mb-5 text-brand-600 dark:text-brand-400 shadow-xl shadow-brand-500/10">
           <Building2 className="w-8 h-8" />
         </div>
 
-        <h2 className="text-xl font-bold text-white mb-2 tracking-tight">{title}</h2>
-        <p className="text-xs sm:text-sm text-slate-400 mb-6 leading-relaxed max-w-sm mx-auto">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">{title}</h2>
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed max-w-sm mx-auto">
           {description}
         </p>
 
@@ -41,8 +41,8 @@ export const EmptyWorkspaceState: React.FC<EmptyWorkspaceStateProps> = ({
           </Button>
 
           {workspaces.length > 0 && (
-            <div className="pt-4 border-t border-slate-800">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-2">
                 Or select an existing workspace:
               </span>
               <div className="flex flex-wrap justify-center gap-2 max-h-32 overflow-y-auto">
@@ -50,7 +50,7 @@ export const EmptyWorkspaceState: React.FC<EmptyWorkspaceStateProps> = ({
                   <button
                     key={ws.id}
                     onClick={() => selectWorkspace(ws.id)}
-                    className="px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 border border-slate-700 transition-colors"
+                    className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-medium text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors"
                   >
                     {ws.name}
                   </button>

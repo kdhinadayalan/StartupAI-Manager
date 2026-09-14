@@ -22,9 +22,13 @@ import {
   RefreshCw,
   X,
 } from 'lucide-react';
+import { formatCurrency, getCurrencySymbol } from '../../utils/currency';
 
 export const FinancePage: React.FC = () => {
   const { currentWorkspace, currentRole } = useWorkspace();
+  const currencyCode = currentWorkspace?.currency || 'INR';
+  const currencySymbol = getCurrencySymbol(currencyCode);
+
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [account, setAccount] = useState<FinancialAccount | null>(null);
   const [burnRate, setBurnRate] = useState<BurnRateData | null>(null);
@@ -98,7 +102,7 @@ export const FinancePage: React.FC = () => {
     if (!currentWorkspace || !cashBalance) return;
     setIsSubmitting(true);
     try {
-      await financeApi.setCash(currentWorkspace.id, parseFloat(cashBalance));
+      await financeApi.setCash(currentWorkspace.id, parseFloat(cashBalance), currencyCode);
       setCashBalance('');
       setIsCashOpen(false);
       fetchData();
@@ -150,49 +154,49 @@ export const FinancePage: React.FC = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-xl p-4 space-y-2 shadow-sm dark:shadow-none transition-colors">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1.5 font-medium">
-              <TrendingDown className="w-4 h-4 text-red-400" /> Monthly Burn Rate
+              <TrendingDown className="w-4 h-4 text-red-500 dark:text-red-400" /> Monthly Burn Rate
             </span>
-            <span className="text-[10px] text-slate-500">Trailing 30d</span>
+            <span className="text-[10px] text-slate-400 dark:text-slate-500">Trailing 30d</span>
           </div>
-          <div className="text-2xl font-bold text-white">
-            ${burnRate?.monthly_burn_rate.toLocaleString() || '0.00'}
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            {formatCurrency(burnRate?.monthly_burn_rate, currencyCode)}
           </div>
           <div className="text-[11px] text-slate-500">
-            Total Spend: ${burnRate?.total_historical_spend.toLocaleString() || '0.00'}
+            Total Spend: {formatCurrency(burnRate?.total_historical_spend, currencyCode)}
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-xl p-4 space-y-2 shadow-sm dark:shadow-none transition-colors">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1.5 font-medium">
-              <Clock className="w-4 h-4 text-amber-400" /> Cash Runway
+              <Clock className="w-4 h-4 text-amber-500 dark:text-amber-400" /> Cash Runway
             </span>
             <Badge variant={runway?.has_cash_data ? 'primary' : 'warning'} className="text-[10px]">
               {runway?.has_cash_data ? 'Verified' : 'Missing Cash'}
             </Badge>
           </div>
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white">
             {runway?.runway_months !== null && runway?.runway_months !== undefined
               ? `${runway.runway_months} Months`
               : 'Unknown'}
           </div>
-          <div className="text-[11px] text-slate-400 truncate" title={runway?.message}>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate" title={runway?.message}>
             {runway?.message}
           </div>
         </div>
 
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-4 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-xl p-4 space-y-2 shadow-sm dark:shadow-none transition-colors">
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1.5 font-medium">
-              <Wallet className="w-4 h-4 text-emerald-400" /> Liquid Cash Available
+              <Wallet className="w-4 h-4 text-emerald-500 dark:text-emerald-400" /> Liquid Cash Available
             </span>
-            <span className="text-[10px] text-slate-500">{account?.currency || 'USD'}</span>
+            <span className="text-[10px] text-slate-500">{currencyCode}</span>
           </div>
-          <div className="text-2xl font-bold text-emerald-400">
-            ${account?.current_cash_balance.toLocaleString() || '0.00'}
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+            {formatCurrency(account?.current_cash_balance, currencyCode)}
           </div>
           <div className="text-[11px] text-slate-500">
             Last Updated:{' '}
@@ -218,12 +222,12 @@ export const FinancePage: React.FC = () => {
                     {c.category}
                     {c.is_exceeded && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1">
-                        <AlertTriangle className="w-3 h-3" /> Exceeded by ${Math.abs(c.variance).toLocaleString()}
+                        <AlertTriangle className="w-3 h-3" /> Exceeded by {formatCurrency(Math.abs(c.variance), currencyCode)}
                       </span>
                     )}
                   </span>
                   <span className="text-slate-400">
-                    ${c.actual.toLocaleString()} / ${c.budget.toLocaleString()} ({c.percent_used}%)
+                    {formatCurrency(c.actual, currencyCode)} / {formatCurrency(c.budget, currencyCode)} ({c.percent_used}%)
                   </span>
                 </div>
                 <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
@@ -243,8 +247,8 @@ export const FinancePage: React.FC = () => {
       {/* Expenses Ledger */}
       <Card title="Expenses Ledger" subtitle={`${expenses.length} recorded operational expenses`}>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700/60">
+          <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-700/60">
               <tr>
                 <th className="py-3 px-4">Title</th>
                 <th className="py-3 px-4">Category</th>
@@ -252,7 +256,7 @@ export const FinancePage: React.FC = () => {
                 <th className="py-3 px-4">Date</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {expenses.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="py-8 text-center text-slate-500">
@@ -261,17 +265,17 @@ export const FinancePage: React.FC = () => {
                 </tr>
               ) : (
                 expenses.map((e) => (
-                  <tr key={e.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="py-3 px-4 font-semibold text-white">{e.title}</td>
+                  <tr key={e.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+                    <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">{e.title}</td>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded bg-slate-800 text-[11px] text-slate-300 border border-slate-700">
+                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         {e.category}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-bold text-red-400">
-                      -${e.amount.toLocaleString()}
+                    <td className="py-3 px-4 font-bold text-red-500 dark:text-red-400">
+                      -{formatCurrency(e.amount, currencyCode)}
                     </td>
-                    <td className="py-3 px-4 text-slate-400">
+                    <td className="py-3 px-4 text-slate-500 dark:text-slate-400">
                       {new Date(e.expense_date).toLocaleDateString()}
                     </td>
                   </tr>
@@ -284,11 +288,11 @@ export const FinancePage: React.FC = () => {
 
       {/* Record Expense Modal */}
       {isExpenseOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-              <h3 className="text-base font-bold text-white">Record Operational Expense</h3>
-              <button onClick={() => setIsExpenseOpen(false)} className="text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Record Operational Expense</h3>
+              <button onClick={() => setIsExpenseOpen(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -304,7 +308,7 @@ export const FinancePage: React.FC = () => {
               />
 
               <Input
-                label="Amount (USD)"
+                label={`Amount (${currencySymbol})`}
                 type="number"
                 placeholder="e.g. 1500"
                 value={amount}
@@ -313,13 +317,13 @@ export const FinancePage: React.FC = () => {
               />
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
                   Category
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                 >
                   <option value="PAYROLL">PAYROLL</option>
                   <option value="INFRASTRUCTURE">INFRASTRUCTURE</option>
@@ -331,7 +335,7 @@ export const FinancePage: React.FC = () => {
                 </select>
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <Button variant="ghost" size="sm" type="button" onClick={() => setIsExpenseOpen(false)}>
                   Cancel
                 </Button>
@@ -346,18 +350,18 @@ export const FinancePage: React.FC = () => {
 
       {/* Set Cash Modal */}
       {isCashOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-              <h3 className="text-base font-bold text-white">Update Liquid Cash Treasury</h3>
-              <button onClick={() => setIsCashOpen(false)} className="text-slate-400 hover:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl relative text-slate-900 dark:text-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Update Liquid Cash Treasury</h3>
+              <button onClick={() => setIsCashOpen(false)} className="text-slate-400 hover:text-slate-700 dark:hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleUpdateCash} className="space-y-4">
               <Input
-                label="Available Liquid Cash (USD)"
+                label={`Available Liquid Cash (${currencySymbol})`}
                 type="number"
                 placeholder="e.g. 250000"
                 value={cashBalance}

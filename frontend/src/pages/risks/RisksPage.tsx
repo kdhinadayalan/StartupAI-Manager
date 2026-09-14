@@ -124,11 +124,11 @@ export const RisksPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-red-400" />
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <ShieldAlert className="w-5 h-5 text-red-500 dark:text-red-400" />
             Automated Risk Detection & Governance
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Deterministic risk scoring (Likelihood × Impact), cross-domain automated scanning, and mitigation plans.
           </p>
         </div>
@@ -139,7 +139,7 @@ export const RisksPage: React.FC = () => {
           </Button>
 
           <Button variant="ghost" size="sm" onClick={handleRunScan} isLoading={isScanning}>
-            <Radar className="w-4 h-4 mr-1.5 text-brand-400" /> Run Automated Scan
+            <Radar className="w-4 h-4 mr-1.5 text-brand-500 dark:text-brand-400" /> Run Automated Scan
           </Button>
 
           {canManage && (
@@ -152,15 +152,15 @@ export const RisksPage: React.FC = () => {
 
       {/* Live Scanner Findings if Scan Triggered */}
       {scanSignals.length > 0 && (
-        <div className="bg-slate-900/90 border border-brand-500/40 rounded-xl p-5 space-y-3 shadow-xl">
+        <div className="bg-white dark:bg-slate-900/90 border border-brand-500/40 rounded-xl p-5 space-y-3 shadow-xl">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-white font-bold text-sm">
-              <Radar className="w-4 h-4 text-brand-400 animate-pulse" />
+            <div className="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
+              <Radar className="w-4 h-4 text-brand-500 dark:text-brand-400 animate-pulse" />
               Automated Scanner Findings ({scanSignals.length} signals detected)
             </div>
             <button
               onClick={() => setScanSignals([])}
-              className="text-slate-400 hover:text-white p-1"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1"
             >
               <X className="w-4 h-4" />
             </button>
@@ -170,14 +170,14 @@ export const RisksPage: React.FC = () => {
             {scanSignals.map((s, idx) => (
               <div
                 key={idx}
-                className="bg-slate-800/80 border border-slate-700/60 rounded-lg p-3.5 space-y-1.5 text-xs"
+                className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 rounded-lg p-3.5 space-y-1.5 text-xs"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="font-bold text-white leading-tight">{s.title}</span>
+                  <span className="font-bold text-slate-900 dark:text-white leading-tight">{s.title}</span>
                   {getSeverityBadge(s.severity)}
                 </div>
-                <p className="text-slate-300 text-[11px]">{s.description}</p>
-                <div className="text-[11px] text-amber-300 font-medium pt-1">
+                <p className="text-slate-600 dark:text-slate-300 text-[11px]">{s.description}</p>
+                <div className="text-[11px] text-amber-600 dark:text-amber-300 font-medium pt-1">
                   💡 {s.indicator}
                 </div>
               </div>
@@ -189,8 +189,8 @@ export const RisksPage: React.FC = () => {
       {/* Tracked Risks Table */}
       <Card title="Risk Registry" subtitle={`${risks.length} registered risks across operational and financial categories`}>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs text-slate-300">
-            <thead className="bg-slate-900/60 text-slate-400 uppercase font-semibold border-b border-slate-700/60">
+          <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
+            <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-700/60">
               <tr>
                 <th className="py-3 px-4">Risk</th>
                 <th className="py-3 px-4">Category</th>
@@ -201,7 +201,7 @@ export const RisksPage: React.FC = () => {
                 {canManage && <th className="py-3 px-4 text-right">Update</th>}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {risks.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-slate-500">
@@ -210,36 +210,36 @@ export const RisksPage: React.FC = () => {
                 </tr>
               ) : (
                 risks.map((r) => (
-                  <tr key={r.id} className="hover:bg-slate-800/30 transition-colors">
+                  <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                     <td className="py-3 px-4">
                       <div>
-                        <span className="font-bold text-white block">{r.title}</span>
+                        <span className="font-bold text-slate-900 dark:text-white block">{r.title}</span>
                         {r.description && (
-                          <span className="text-[11px] text-slate-400 block line-clamp-1">
+                          <span className="text-[11px] text-slate-500 dark:text-slate-400 block line-clamp-1">
                             {r.description}
                           </span>
                         )}
                       </div>
                     </td>
                     <td className="py-3 px-4">
-                      <span className="px-2 py-0.5 rounded bg-slate-800 text-[11px] text-slate-300 border border-slate-700">
+                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         {r.category}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-mono text-slate-400">
+                    <td className="py-3 px-4 font-mono text-slate-500 dark:text-slate-400">
                       {r.likelihood} × {r.impact}
                     </td>
-                    <td className="py-3 px-4 font-bold text-white">{r.risk_score}/25</td>
+                    <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">{r.risk_score}/25</td>
                     <td className="py-3 px-4">{getSeverityBadge(r.severity)}</td>
                     <td className="py-3 px-4">
-                      <span className="text-slate-300 font-medium">{r.status}</span>
+                      <span className="text-slate-700 dark:text-slate-300 font-medium">{r.status}</span>
                     </td>
                     {canManage && (
                       <td className="py-3 px-4 text-right">
                         <select
                           value={r.status}
                           onChange={(e) => handleStatusChange(r.id, e.target.value)}
-                          className="bg-slate-800 border border-slate-700 rounded px-2 py-1 text-[11px] text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                          className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-2 py-1 text-[11px] text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-500"
                         >
                           <option value="IDENTIFIED">IDENTIFIED</option>
                           <option value="MONITORING">MONITORING</option>
@@ -259,10 +259,10 @@ export const RisksPage: React.FC = () => {
       {/* Add Risk Modal */}
       {isAddOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
-              <h3 className="text-base font-bold text-white">Log Identified Risk</h3>
-              <button onClick={() => setIsAddOpen(false)} className="text-slate-400 hover:text-white">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Log Identified Risk</h3>
+              <button onClick={() => setIsAddOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -278,13 +278,13 @@ export const RisksPage: React.FC = () => {
               />
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                   Category
                 </label>
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                 >
                   <option value="OPERATIONAL">OPERATIONAL</option>
                   <option value="FINANCIAL">FINANCIAL</option>
@@ -299,13 +299,13 @@ export const RisksPage: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                     Likelihood (1 - 5)
                   </label>
                   <select
                     value={likelihood}
                     onChange={(e) => setLikelihood(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   >
                     <option value="1">1 - Rare</option>
                     <option value="2">2 - Unlikely</option>
@@ -316,13 +316,13 @@ export const RisksPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                     Impact (1 - 5)
                   </label>
                   <select
                     value={impact}
                     onChange={(e) => setImpact(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   >
                     <option value="1">1 - Negligible</option>
                     <option value="2">2 - Minor</option>
@@ -334,11 +334,11 @@ export const RisksPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
                   Mitigation Plan
                 </label>
                 <textarea
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
                   rows={2}
                   placeholder="Actionable steps to mitigate or prevent this risk..."
                   value={mitigationPlan}
@@ -346,7 +346,7 @@ export const RisksPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <Button variant="ghost" size="sm" type="button" onClick={() => setIsAddOpen(false)}>
                   Cancel
                 </Button>

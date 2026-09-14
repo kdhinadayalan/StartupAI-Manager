@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.permissions import Role, Permission, check_role_permission
 from app.database.base import utc_now
 from app.models.finance import Expense, Budget, FinancialAccount, ExpenseCategory, BudgetPeriod
+from app.models.workspace import Workspace
 from app.services.workspace_service import get_member_membership
 from app.services.audit_service import log_audit_event
 
@@ -30,11 +31,13 @@ def get_or_create_financial_account(
     ).scalar_one_or_none()
 
     if not account:
+        ws = db.execute(select(Workspace).where(Workspace.id == workspace_id)).scalar_one_or_none()
+        ws_currency = ws.currency if ws and ws.currency else "INR"
         account = FinancialAccount(
             workspace_id=workspace_id,
             account_name="Primary Treasury",
             current_cash_balance=0.0,
-            currency="USD",
+            currency=ws_currency,
         )
         db.add(account)
         db.commit()
@@ -59,7 +62,9 @@ def set_cash_balance(
 
     account = get_or_create_financial_account(db, workspace_id, user_id)
     account.current_cash_balance = balance
-    account.currency = currency
+    ws = db.execute(select(Workspace).where(Workspace.id == workspace_id)).scalar_one_or_none()
+    target_currency = currency if (currency and currency != "USD") else (account.currency or (ws.currency if ws else "INR"))
+    account.currency = target_currency
     account.last_updated_at = utc_now()
     db.commit()
     db.refresh(account)

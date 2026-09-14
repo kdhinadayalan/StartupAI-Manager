@@ -82,12 +82,12 @@ export const Sidebar: React.FC = () => {
   });
 
   return (
-    <aside className="w-64 border-r border-slate-800 bg-slate-900/60 flex flex-col shrink-0 min-h-[calc(100vh-4rem)]">
+    <aside className="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 flex flex-col shrink-0 min-h-[calc(100vh-4rem)] transition-colors duration-150">
       <div className="p-4 flex-1 space-y-1">
-        <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-3 mb-2 flex items-center justify-between">
+        <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2 flex items-center justify-between">
           <span>Operations</span>
           {currentRole && (
-            <span className="text-[10px] text-slate-400 font-medium normal-case tracking-normal">
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium normal-case tracking-normal">
               {currentRole}
             </span>
           )}
@@ -101,8 +101,8 @@ export const Sidebar: React.FC = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
                   isActive
-                    ? 'bg-brand-600/15 text-brand-400 border border-brand-500/30'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/15 dark:text-brand-400 dark:border-brand-500/30 font-semibold'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/60'
                 }`
               }
             >
@@ -113,13 +113,13 @@ export const Sidebar: React.FC = () => {
         })}
       </div>
 
-      <div className="p-4 border-t border-slate-800/80">
-        <div className="rounded-lg bg-slate-800/50 p-3 border border-slate-700/40">
-          <div className="flex items-center gap-2 text-xs font-semibold text-white">
+      <div className="p-4 border-t border-slate-200 dark:border-slate-800/80">
+        <div className="rounded-lg bg-slate-50 dark:bg-slate-800/50 p-3 border border-slate-200 dark:border-slate-700/40">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 dark:text-white">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             System Online
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Multi-Agent Core Ready</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Multi-Agent Core Ready</p>
         </div>
       </div>
     </aside>
