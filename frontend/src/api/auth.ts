@@ -59,4 +59,19 @@ export const authApi = {
   revokeSession: async (jti: string): Promise<void> => {
     await apiClient.request(`/auth/sessions/${jti}`, { method: 'DELETE' });
   },
+
+  updateProfile: async (payload: { full_name?: string; avatar_url?: string }): Promise<User> => {
+    return apiClient.request<User>('/auth/me', {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  changePassword: async (current_password: string, new_password: string): Promise<void> => {
+    await apiClient.request('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ current_password, new_password }),
+    });
+  },
 };
+

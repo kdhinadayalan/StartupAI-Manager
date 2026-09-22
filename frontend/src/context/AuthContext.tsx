@@ -12,6 +12,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   logoutAll: () => Promise<void>;
   refreshUserProfile: () => Promise<void>;
+  updateUserProfile: (payload: { full_name?: string; avatar_url?: string }) => Promise<User>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -81,6 +82,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUserProfile = async (payload: { full_name?: string; avatar_url?: string }): Promise<User> => {
+    const updatedUser = await authApi.updateProfile(payload);
+    setUser(updatedUser);
+    return updatedUser;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -92,6 +99,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         logoutAll,
         refreshUserProfile,
+        updateUserProfile,
       }}
     >
       {children}

@@ -160,3 +160,64 @@ def test_password_change_flow(client: TestClient):
         json={"email": email, "password": new_pw},
     )
     assert success_res.status_code == 200
+
+
+def test_update_user_profile_success(client: TestClient):
+    email = "grace@startup.io"
+    password = "GracePassword123!"
+
+    client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": password, "full_name": "Grace Hopper"},
+    )
+    login_res = client.post(
+        "/api/v1/auth/login",
+        json={"email": email, "password": password},
+    )
+    token = login_res.json()["data"]["access_token"]
+
+    patch_res = client.patch(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "full_name": "Rear Admiral Grace Hopper",
+            "avatar_url": "https://example.com/grace.png",
+        },
+    )
+    assert patch_res.status_code == 200
+    data = patch_res.json()["data"]
+    assert data["full_name"] == "Rear Admiral Grace Hopper"
+    assert data["avatar_url"] == "https://example.com/grace.png"
+    assert data["email"] == email
+
+
+def test_update_user_profile_blocks_email_and_password_mutation(client: TestClient):
+    email = "heidi@startup.io"
+    password = "HeidiPassword123!"
+
+    client.post(
+        "/api/v1/auth/register",
+        json={"email": email, "password": password, "full_name": "Heidi Hacker"},
+    )
+    login_res = client.post(
+        "/api/v1/auth/login",
+        json={"email": email, "password": password},
+    )
+    token = login_res.json()["data"]["access_token"]
+
+    # Attempting to change email must fail with 422
+    fail_email = client.patch(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"email": "newheidi@startup.io"},
+    )
+    assert fail_email.status_code == 422
+
+    # Attempting to change password via profile update must fail with 422
+    fail_pw = client.patch(
+        "/api/v1/auth/me",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"password": "HackedPassword999!"},
+    )
+    assert fail_pw.status_code == 422
+

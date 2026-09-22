@@ -343,3 +343,47 @@ def change_user_password(
         correlation_id=correlation_id,
     )
     return True
+
+
+def update_user_profile(
+    db: Session,
+    user: User,
+    full_name: Optional[str] = None,
+    avatar_url: Optional[str] = None,
+    ip_address: Optional[str] = None,
+    correlation_id: Optional[str] = None,
+) -> User:
+    """Update user's full name and avatar URL. Email and password cannot be mutated here."""
+    updated = False
+    if full_name is not None:
+        trimmed = full_name.strip()
+        if len(trimmed) < 2 or len(trimmed) > 100:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Full name must be between 2 and 100 characters.",
+            )
+        user.full_name = trimmed
+        updated = True
+
+    if avatar_url is not None:
+        user.avatar_url = avatar_url.strip() if avatar_url.strip() else None
+        updated = True
+
+    if updated:
+        user.updated_at = utc_now()
+        db.commit()
+        db.refresh(user)
+
+        log_audit_event(
+            db=db,
+            action="USER_PROFILE_UPDATED",
+            user_id=user.id,
+            resource_type="user",
+            resource_id=user.id,
+            details={"full_name": user.full_name, "avatar_url": user.avatar_url},
+            ip_address=ip_address,
+            correlation_id=correlation_id,
+        )
+
+    return user
+

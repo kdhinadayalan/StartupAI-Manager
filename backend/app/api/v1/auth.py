@@ -13,7 +13,7 @@ from app.schemas.auth import (
     TokenResponse,
 )
 from app.schemas.common import SuccessResponse
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserProfileUpdate, UserResponse
 from app.services.auth_service import (
     authenticate_user,
     change_user_password,
@@ -23,6 +23,7 @@ from app.services.auth_service import (
     register_user,
     revoke_all_user_sessions,
     revoke_session_by_jti,
+    update_user_profile,
 )
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -121,6 +122,29 @@ def get_current_user_profile(
 ):
     """Get profile of authenticated user."""
     return SuccessResponse(data=current_user)
+
+
+@router.patch("/me", response_model=SuccessResponse[UserResponse])
+def update_current_user_profile(
+    request: Request,
+    body: UserProfileUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Update full name and avatar URL for authenticated user. Email and password cannot be mutated here."""
+    ip_address = request.client.host if request.client else None
+    correlation_id = getattr(request.state, "correlation_id", None)
+
+    updated_user = update_user_profile(
+        db=db,
+        user=current_user,
+        full_name=body.full_name,
+        avatar_url=body.avatar_url,
+        ip_address=ip_address,
+        correlation_id=correlation_id,
+    )
+    return SuccessResponse(message="Profile updated successfully.", data=updated_user)
+
 
 
 @router.get("/sessions", response_model=SuccessResponse[List[SessionResponse]])

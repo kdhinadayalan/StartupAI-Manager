@@ -5,6 +5,7 @@ import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { Avatar } from '../../components/common/Avatar';
 import { Role } from '../../types/auth';
 import { Users, UserPlus, Shield, Trash2, CheckCircle } from 'lucide-react';
 
@@ -113,9 +114,11 @@ export const TeamPage: React.FC = () => {
                 <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-semibold text-slate-700 dark:text-slate-200">
-                        {m.user?.full_name?.charAt(0) || 'U'}
-                      </div>
+                      <Avatar
+                        src={m.user?.avatar_url}
+                        name={m.user?.full_name || 'Member'}
+                        size="sm"
+                      />
                       <span className="font-semibold text-slate-900 dark:text-white">{m.user?.full_name || 'Member'}</span>
                     </div>
                   </td>

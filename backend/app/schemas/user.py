@@ -23,6 +23,14 @@ class UserUpdate(BaseModel):
     is_active: Optional[bool] = None
 
 
+class UserProfileUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    full_name: Optional[str] = Field(None, min_length=2, max_length=100)
+    avatar_url: Optional[str] = Field(None, max_length=500)
+
+
+
 class UserResponse(UserBase):
     model_config = ConfigDict(from_attributes=True, extra="ignore")
 
