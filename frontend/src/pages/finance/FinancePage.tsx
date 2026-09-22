@@ -126,11 +126,11 @@ export const FinancePage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-emerald-400" />
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
             Financial Intelligence & Cash Runway
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Deterministic burn rate, cash runway calculations, and category budget enforcement.
           </p>
         </div>
@@ -183,7 +183,22 @@ export const FinancePage: React.FC = () => {
               ? `${runway.runway_months} Months`
               : 'Unknown'}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate" title={runway?.message}>
+          {/* Visual Runway Health Indicator Line */}
+          <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden mt-1.5">
+            <div
+              className={`h-full rounded-full transition-all ${
+                (runway?.runway_months || 0) >= 12
+                  ? 'bg-emerald-500'
+                  : (runway?.runway_months || 0) >= 6
+                  ? 'bg-amber-500'
+                  : 'bg-rose-500'
+              }`}
+              style={{
+                width: `${Math.min(100, Math.max(8, ((runway?.runway_months || 0) / 18) * 100))}%`,
+              }}
+            />
+          </div>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-1" title={runway?.message}>
             {runway?.message}
           </div>
         </div>
@@ -218,19 +233,19 @@ export const FinancePage: React.FC = () => {
             {comparisons.map((c) => (
               <div key={c.category} className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-semibold text-white flex items-center gap-2">
+                  <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                     {c.category}
                     {c.is_exceeded && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20 font-bold flex items-center gap-1">
                         <AlertTriangle className="w-3 h-3" /> Exceeded by {formatCurrency(Math.abs(c.variance), currencyCode)}
                       </span>
                     )}
                   </span>
-                  <span className="text-slate-400">
+                  <span className="text-slate-500 dark:text-slate-400">
                     {formatCurrency(c.actual, currencyCode)} / {formatCurrency(c.budget, currencyCode)} ({c.percent_used}%)
                   </span>
                 </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
                       c.is_exceeded ? 'bg-red-500' : c.percent_used > 80 ? 'bg-amber-500' : 'bg-emerald-500'

@@ -4,9 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { dashboardApi } from '../../api/dashboard';
 import { aiApi } from '../../api/ai';
-import { authApi } from '../../api/auth';
 import { DashboardSummary } from '../../types/dashboard';
-import { UserSession } from '../../types/auth';
 import { Card } from '../../components/common/Card';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
@@ -22,19 +20,17 @@ import {
   Compass,
   CheckSquare,
   RefreshCw,
-  Trash2,
   Bot,
   ExternalLink,
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/currency';
 
 export const Dashboard: React.FC = () => {
-  const { user, logoutAll } = useAuth();
+  const { user } = useAuth();
   const { currentWorkspace, currentRole } = useWorkspace();
   const currencyCode = currentWorkspace?.currency || 'INR';
 
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [sessions, setSessions] = useState<UserSession[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isProcessingApproval, setIsProcessingApproval] = useState<string | null>(null);
 
@@ -44,12 +40,8 @@ export const Dashboard: React.FC = () => {
     if (!currentWorkspace) return;
     setIsLoading(true);
     try {
-      const [sumData, sessData] = await Promise.all([
-        dashboardApi.getSummary(currentWorkspace.id),
-        authApi.getSessions(),
-      ]);
+      const sumData = await dashboardApi.getSummary(currentWorkspace.id);
       setSummary(sumData);
-      setSessions(sessData);
     } catch (err) {
       console.error('Failed to load dashboard summary:', err);
     } finally {
@@ -85,16 +77,6 @@ export const Dashboard: React.FC = () => {
       alert(err.message || 'Failed to reject action.');
     } finally {
       setIsProcessingApproval(null);
-    }
-  };
-
-  const handleRevokeSession = async (jti: string) => {
-    try {
-      await authApi.revokeSession(jti);
-      const sessData = await authApi.getSessions();
-      setSessions(sessData);
-    } catch (err) {
-      console.error('Error revoking session:', err);
     }
   };
 
@@ -250,17 +232,17 @@ export const Dashboard: React.FC = () => {
 
       {/* 2. PENDING AI APPROVAL REVIEW CARDS (Direct Dashboard Action) */}
       {summary?.pending_approvals && summary.pending_approvals.length > 0 && (
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 space-y-3">
+        <div className="bg-amber-500/10 dark:bg-amber-950/20 border border-amber-400/60 dark:border-amber-600/40 rounded-2xl p-5 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Bot className="w-4 h-4 text-amber-400" />
-              <span className="font-bold text-white text-sm">
+              <Bot className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="font-bold text-amber-950 dark:text-amber-200 text-sm">
                 Action Required: Pending AI Approvals ({summary.pending_approvals.length})
               </span>
             </div>
             <Link
               to="/ai-manager"
-              className="text-xs text-amber-300 hover:text-white flex items-center gap-1 font-medium"
+              className="text-xs text-amber-700 dark:text-amber-300 hover:text-amber-900 dark:hover:text-white flex items-center gap-1 font-semibold"
             >
               Open AI Manager <ExternalLink className="w-3 h-3" />
             </Link>
@@ -319,7 +301,7 @@ export const Dashboard: React.FC = () => {
               </span>
               <ArrowRight className="w-3 h-3 group-hover:text-brand-400 transition-colors" />
             </div>
-            <div className="mt-2 text-2xl font-bold text-white">
+            <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {formatCurrency(summary?.finance.monthly_burn_rate, currencyCode)}
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
@@ -337,7 +319,7 @@ export const Dashboard: React.FC = () => {
               </span>
               <ArrowRight className="w-3 h-3 group-hover:text-brand-400 transition-colors" />
             </div>
-            <div className="mt-2 text-2xl font-bold text-white">
+            <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {formatCurrency(summary?.marketing.total_spend, currencyCode)}
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
@@ -355,7 +337,7 @@ export const Dashboard: React.FC = () => {
               </span>
               <ArrowRight className="w-3 h-3 group-hover:text-brand-400 transition-colors" />
             </div>
-            <div className="mt-2 text-2xl font-bold text-white">
+            <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {summary?.research.competitors_count || 0}
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
@@ -373,7 +355,7 @@ export const Dashboard: React.FC = () => {
               </span>
               <ArrowRight className="w-3 h-3 group-hover:text-brand-400 transition-colors" />
             </div>
-            <div className="mt-2 text-2xl font-bold text-white">
+            <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
               {summary?.risks.total_active_risks || 0}
             </div>
             <p className="text-[11px] text-slate-400 mt-1">
@@ -386,66 +368,6 @@ export const Dashboard: React.FC = () => {
           </Card>
         </Link>
       </div>
-
-      {/* 4. PERSISTENT SECURITY SESSIONS & REVOCATION */}
-      <Card
-        title="Persistent User Sessions & Token Revocation"
-        subtitle="PostgreSQL-persisted session store with Argon2id and deterministic JWT JTI validation."
-        action={
-          <div className="flex items-center gap-2">
-            <Button variant="danger" size="sm" onClick={logoutAll}>
-              Revoke All Other Sessions
-            </Button>
-          </div>
-        }
-      >
-        {sessions.length === 0 ? (
-          <div className="text-center py-6 text-xs text-slate-400">No active sessions found.</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-              <thead className="bg-slate-50 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-700/60">
-                <tr>
-                  <th className="py-2.5 px-3">Session JTI</th>
-                  <th className="py-2.5 px-3">Client Info</th>
-                  <th className="py-2.5 px-3">Status</th>
-                  <th className="py-2.5 px-3">Created</th>
-                  <th className="py-2.5 px-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {sessions.map((session) => (
-                  <tr key={session.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
-                    <td className="py-2.5 px-3 font-mono text-slate-500 dark:text-slate-400 truncate max-w-[180px]">
-                      {session.token_jti}
-                    </td>
-                    <td className="py-2.5 px-3">
-                      <span className="block text-slate-900 dark:text-white font-medium">{session.ip_address || '127.0.0.1'}</span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 truncate block max-w-xs">{session.user_agent || 'Web Client'}</span>
-                    </td>
-                    <td className="py-2.5 px-3">
-                      {session.is_revoked ? <Badge variant="danger">Revoked</Badge> : <Badge variant="success">Active</Badge>}
-                    </td>
-                    <td className="py-2.5 px-3 text-slate-500 dark:text-slate-400">{new Date(session.created_at).toLocaleString()}</td>
-                    <td className="py-2.5 px-3 text-right">
-                      {!session.is_revoked && (
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          onClick={() => handleRevokeSession(session.token_jti)}
-                          title="Revoke session"
-                        >
-                          <Trash2 className="w-3 h-3 mr-1" /> Revoke
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </Card>
     </div>
   );
 };

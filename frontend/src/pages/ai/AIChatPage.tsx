@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useWorkspace } from '../../context/WorkspaceContext';
-import { aiApi, ChatResponsePayload } from '../../api/ai';
-import { ChatMessage } from '../../types/ai';
+import { useAIConversation } from '../../context/AIConversationContext';
+import { aiApi } from '../../api/ai';
 import { Badge } from '../../components/common/Badge';
 import { Button } from '../../components/common/Button';
 import {
@@ -14,14 +14,21 @@ import {
   Cpu,
   Terminal,
   Activity,
+  RotateCcw,
 } from 'lucide-react';
 
 export const AIChatPage: React.FC = () => {
   const { currentWorkspace } = useWorkspace();
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const {
+    messages,
+    isLoading,
+    sendMessage,
+    approveAction,
+    rejectAction,
+    clearConversation,
+  } = useAIConversation();
+
   const [input, setInput] = useState('');
-  const [conversationId, setConversationId] = useState<string | undefined>();
-  const [isLoading, setIsLoading] = useState(false);
   const [telemetry, setTelemetry] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -52,72 +59,18 @@ export const AIChatPage: React.FC = () => {
     const query = presetMessage || input;
     if (!currentWorkspace || !query.trim() || isLoading) return;
 
-    const userMsg: ChatMessage = {
-      id: Date.now().toString(),
-      sender: 'user',
-      content: query.trim(),
-      timestamp: new Date().toLocaleTimeString(),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
     if (!presetMessage) setInput('');
-    setIsLoading(true);
-
-    try {
-      const res: ChatResponsePayload = await aiApi.chat(
-        currentWorkspace.id,
-        userMsg.content,
-        conversationId
-      );
-
-      setConversationId(res.conversation_id);
-
-      const agentMsg: ChatMessage = {
-        id: res.run_id,
-        sender: 'agent',
-        content: res.response,
-        plan: res.plan,
-        tokens_used: res.tokens_used,
-        execution_time_ms: res.execution_time_ms,
-        pending_approvals: res.pending_approvals,
-        timestamp: new Date().toLocaleTimeString(),
-      };
-
-      setMessages((prev) => [...prev, agentMsg]);
-      loadTelemetry();
-    } catch (err: any) {
-      const errorMsg: ChatMessage = {
-        id: Date.now().toString(),
-        sender: 'agent',
-        content: `⚠️ Error: ${err.message || 'Failed to communicate with Manager Agent.'}`,
-        timestamp: new Date().toLocaleTimeString(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
-    } finally {
-      setIsLoading(false);
-    }
+    await sendMessage(query.trim());
+    loadTelemetry();
   };
 
   const handleApproveAction = async (approvalId: string) => {
     if (!currentWorkspace) return;
     try {
-      await aiApi.approve(currentWorkspace.id, approvalId);
-      alert('Action approved and executed successfully by the backend!');
+      await approveAction(approvalId);
       loadTelemetry();
-      // Remove approval from visible list or update state
-      setMessages((prev) =>
-        prev.map((m) => {
-          if (m.pending_approvals) {
-            return {
-              ...m,
-              pending_approvals: m.pending_approvals.filter((a) => a.approval_id !== approvalId),
-            };
-          }
-          return m;
-        })
-      );
     } catch (err: any) {
-      alert(err.message || 'Failed to approve action. Verification check failed.');
+      alert(err.message || 'Failed to approve action.');
     }
   };
 
@@ -125,20 +78,8 @@ export const AIChatPage: React.FC = () => {
     if (!currentWorkspace) return;
     const reason = prompt('Please enter a rejection reason:') || undefined;
     try {
-      await aiApi.reject(currentWorkspace.id, approvalId, reason);
-      alert('Action rejected.');
+      await rejectAction(approvalId, reason);
       loadTelemetry();
-      setMessages((prev) =>
-        prev.map((m) => {
-          if (m.pending_approvals) {
-            return {
-              ...m,
-              pending_approvals: m.pending_approvals.filter((a) => a.approval_id !== approvalId),
-            };
-          }
-          return m;
-        })
-      );
     } catch (err: any) {
       alert(err.message || 'Failed to reject action.');
     }
@@ -166,29 +107,41 @@ export const AIChatPage: React.FC = () => {
           </p>
         </div>
 
-        {telemetry && (
-          <div className="flex items-center gap-2 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-400 shadow-sm dark:shadow-none">
-            <span className="flex items-center gap-1">
-              <Activity className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
-              {telemetry.total_runs} runs
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <Cpu className="w-3 h-3 text-brand-500 dark:text-brand-400" />
-              {telemetry.total_tokens.toLocaleString()} tokens
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3 h-3 text-amber-500 dark:text-amber-400" />
-              {telemetry.avg_execution_time_ms}ms avg
-            </span>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={clearConversation}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all"
+            title="Start a fresh conversation thread"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>New Thread</span>
+          </button>
+
+          {telemetry && (
+            <div className="flex items-center gap-2 bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-400 shadow-sm dark:shadow-none">
+              <span className="flex items-center gap-1">
+                <Activity className="w-3 h-3 text-emerald-500 dark:text-emerald-400" />
+                {telemetry.total_runs} runs
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Cpu className="w-3 h-3 text-brand-500 dark:text-brand-400" />
+                {telemetry.total_tokens.toLocaleString()} tokens
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3 h-3 text-amber-500 dark:text-amber-400" />
+                {telemetry.avg_execution_time_ms}ms avg
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Messages Stream */}
       <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-2">
-        {messages.length === 0 ? (
+        {!messages.some((m) => m.sender === 'user') ? (
           <div className="text-center py-12 space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 flex items-center justify-center mx-auto">
               <Sparkles className="w-6 h-6" />

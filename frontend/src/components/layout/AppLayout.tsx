@@ -3,13 +3,15 @@ import { Outlet, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useWorkspace } from '../../context/WorkspaceContext';
 import { Role } from '../../types/auth';
+import { SidebarProvider } from '../../context/SidebarContext';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { CreateWorkspaceModal } from './CreateWorkspaceModal';
+import { FloatingAIAssistant } from '../ai/FloatingAIAssistant';
 
 // Route-level RBAC requirements based on backend permissions
+// Note: /settings is open to all authenticated users for personal profile management
 export const ROUTE_ROLE_REQUIREMENTS: Record<string, Role[]> = {
-  '/settings': ['OWNER', 'ADMIN'],
   '/ai-monitoring': ['OWNER', 'ADMIN', 'MANAGER'],
   '/ai-manager': ['OWNER', 'ADMIN', 'TEAM_LEAD', 'MANAGER', 'TEAM_MEMBER'],
   '/finance': ['OWNER', 'ADMIN', 'MANAGER'],
@@ -52,15 +54,18 @@ export const AppLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-150">
-      <Navbar />
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto p-6 bg-slate-100/60 dark:bg-slate-900/50">
-          <Outlet />
-        </main>
+    <SidebarProvider>
+      <div className="h-screen max-h-screen overflow-hidden flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-150">
+        <Navbar />
+        <div className="flex-1 flex overflow-hidden w-full h-[calc(100vh-4rem)]">
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 bg-slate-100/60 dark:bg-slate-900/50">
+            <Outlet />
+          </main>
+        </div>
+        <CreateWorkspaceModal />
+        <FloatingAIAssistant />
       </div>
-      <CreateWorkspaceModal />
-    </div>
+    </SidebarProvider>
   );
 };

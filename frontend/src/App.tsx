@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { WorkspaceProvider } from './context/WorkspaceContext';
+import { AIConversationProvider } from './context/AIConversationContext';
 import { AppLayout } from './components/layout/AppLayout';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
@@ -29,7 +30,8 @@ export const App: React.FC = () => {
       <ThemeProvider>
         <AuthProvider>
           <WorkspaceProvider>
-            <BrowserRouter>
+            <AIConversationProvider>
+              <BrowserRouter>
               <Routes>
                 {/* Public Auth Routes */}
                 <Route path="/login" element={<Login />} />
@@ -58,8 +60,9 @@ export const App: React.FC = () => {
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </BrowserRouter>
-          </WorkspaceProvider>
-        </AuthProvider>
+          </AIConversationProvider>
+        </WorkspaceProvider>
+      </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
