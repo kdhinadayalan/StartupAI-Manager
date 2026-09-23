@@ -121,8 +121,8 @@ export const Sidebar: React.FC = () => {
       {/* Slide-over Drawer / Collapsible Desktop Sidebar */}
       <aside
         className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col transition-all duration-200 ease-in-out
-          bg-white border-[#E2E8F0] text-[#0F172A]
-          dark:bg-[#0B132B] dark:border-[#1E293B] dark:text-[#F8FAFC]
+          bg-[#f8fafc] border-[#e2e8f0] text-[#0f172a]
+          dark:bg-[#181818] dark:border-[#2d2d2d] dark:text-[#e6edf3]
           lg:static lg:z-auto lg:h-full shrink-0 border-r overflow-hidden
           ${
             isOpen
@@ -131,17 +131,17 @@ export const Sidebar: React.FC = () => {
           }`}
       >
         {/* Upper Header Branding Area */}
-        <div className="h-16 px-3 flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#1E293B] shrink-0">
+        <div className="h-16 px-3 flex items-center justify-between border-b border-[#e2e8f0] dark:border-[#2d2d2d] shrink-0">
           <div className={`flex items-center gap-3 overflow-hidden select-none ${!isOpen ? 'w-full justify-center' : ''}`}>
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm shadow-sky-500/20">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm shadow-blue-500/20">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             {isOpen && (
               <div className="min-w-0 flex-1">
-                <div className="font-bold text-sm tracking-tight text-[#0F172A] dark:text-[#F8FAFC] leading-none truncate">
+                <div className="font-bold text-sm tracking-tight text-[#0f172a] dark:text-white leading-none truncate">
                   StartupAI
                 </div>
-                <div className="text-[10px] font-semibold text-sky-600 dark:text-sky-400 mt-0.5 tracking-wider uppercase truncate">
+                <div className="text-[10px] font-semibold text-[#007acc] dark:text-[#388bfd] mt-0.5 tracking-wider uppercase truncate">
                   Operating System
                 </div>
               </div>
@@ -153,7 +153,7 @@ export const Sidebar: React.FC = () => {
             <button
               onClick={toggleOpen}
               aria-label="Collapse navigation drawer"
-              className="p-1.5 rounded-lg text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] dark:text-[#94A3B8] dark:hover:text-[#F8FAFC] dark:hover:bg-[#0E1B38] transition-colors"
+              className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200/70 dark:text-[#9da7b3] dark:hover:text-white dark:hover:bg-[#2a2d2e] transition-colors"
               title="Collapse navigation"
             >
               <X className="w-5 h-5" />
@@ -171,11 +171,11 @@ export const Sidebar: React.FC = () => {
               <div key={group.groupTitle} className="space-y-1">
                 {/* Tracked-out uppercase group label when open, or subtle divider when collapsed */}
                 {isOpen ? (
-                  <div className="px-3 text-[10px] font-bold tracking-wider uppercase text-[#64748B] dark:text-[#94A3B8] select-none truncate">
+                  <div className="px-3 text-[10px] font-bold tracking-wider uppercase text-slate-500 dark:text-[#9da7b3] select-none truncate">
                     {group.groupTitle}
                   </div>
                 ) : (
-                  <div className="h-px bg-slate-200 dark:bg-slate-800 my-2 mx-1" />
+                  <div className="h-px bg-slate-200 dark:bg-[#2d2d2d] my-2 mx-1" />
                 )}
 
                 {visibleItems.map((item) => {
@@ -197,8 +197,8 @@ export const Sidebar: React.FC = () => {
                         ${isOpen ? 'px-3' : 'justify-center w-10 mx-auto'}
                         ${
                           isActive
-                            ? 'text-sky-600 bg-sky-500/10 font-semibold dark:text-sky-400 dark:bg-sky-500/20'
-                            : 'text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] dark:text-[#94A3B8] dark:hover:text-[#F8FAFC] dark:hover:bg-[#0E1B38]'
+                            ? 'text-[#007acc] bg-[#007acc]/10 font-semibold dark:text-[#388bfd] dark:bg-[#388bfd]/15'
+                            : 'text-slate-600 hover:text-[#0f172a] hover:bg-slate-200/60 dark:text-[#9da7b3] dark:hover:text-white dark:hover:bg-[#2a2d2e]'
                         }`
                       }
                     >
@@ -206,7 +206,7 @@ export const Sidebar: React.FC = () => {
                         <>
                           {/* Active state indicator */}
                           {isActive && (
-                            <span className={`absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full bg-sky-500 dark:bg-sky-400 ${isOpen ? 'w-1 h-5' : 'w-1 h-4'}`} />
+                            <span className={`absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full bg-[#007acc] dark:bg-[#388bfd] ${isOpen ? 'w-1 h-5' : 'w-1 h-4'}`} />
                           )}
 
                           {/* Item Icon */}
@@ -215,8 +215,8 @@ export const Sidebar: React.FC = () => {
                               isOpen ? 'mr-3' : ''
                             } ${
                               isActive
-                                ? 'text-sky-600 dark:text-sky-400'
-                                : 'text-[#64748B] group-hover:text-[#0F172A] dark:text-[#94A3B8] dark:group-hover:text-[#F8FAFC]'
+                                ? 'text-[#007acc] dark:text-[#388bfd]'
+                                : 'text-slate-500 group-hover:text-[#0f172a] dark:text-[#9da7b3] dark:group-hover:text-white'
                             }`}
                           />
 
@@ -224,7 +224,7 @@ export const Sidebar: React.FC = () => {
                           {isOpen && (
                             <>
                               <span className="truncate flex-1 font-medium">{item.label}</span>
-                              <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-[#64748B] dark:text-[#94A3B8]" />
+                              <ChevronRight className="w-3.5 h-3.5 ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-slate-400 dark:text-[#9da7b3]" />
                             </>
                           )}
                         </>
@@ -238,9 +238,9 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Sticky Footer: System Badge & Role Metadata */}
-        <div className="p-3 border-t border-[#E2E8F0] dark:border-[#1E293B] shrink-0 bg-white dark:bg-[#0B132B]">
+        <div className="p-3 border-t border-[#e2e8f0] dark:border-[#2d2d2d] shrink-0 bg-[#f8fafc] dark:bg-[#181818]">
           {isOpen ? (
-            <div className="flex items-center gap-2 p-2 rounded-lg bg-[#F1F5F9] dark:bg-[#0E1B38] border border-[#E2E8F0] dark:border-[#1E293B]">
+            <div className="flex items-center gap-2 p-2 rounded-lg bg-white dark:bg-[#252526] border border-[#e2e8f0] dark:border-[#2d2d2d]">
               {/* Live pulsing green system dot */}
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -258,7 +258,7 @@ export const Sidebar: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] truncate mt-0.5 flex items-center gap-1">
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5 flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-sky-500 shrink-0" />
                   <span className="truncate">{currentWorkspace?.name || 'Workspace'}</span>
                 </div>

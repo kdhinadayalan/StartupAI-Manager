@@ -652,14 +652,14 @@ export const KanbanPage: React.FC = () => {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex border-b border-slate-200 dark:border-slate-800 text-xs font-semibold mb-4 gap-4">
+            <div className="flex border-b border-slate-200 dark:border-[#2d2d2d] text-xs font-semibold mb-4 gap-4">
               <button
                 type="button"
                 onClick={() => setActiveTab('details')}
                 className={`pb-2.5 border-b-2 transition-all ${
                   activeTab === 'details'
-                    ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-bold'
-                    : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    ? 'border-blue-600 text-blue-600 dark:text-[#388bfd] font-bold'
+                    : 'border-transparent text-slate-500 dark:text-[#9da7b3] hover:text-slate-900 dark:hover:text-[#e6edf3]'
                 }`}
               >
                 Task Details
@@ -669,8 +669,8 @@ export const KanbanPage: React.FC = () => {
                 onClick={() => setActiveTab('comments')}
                 className={`pb-2.5 border-b-2 transition-all flex items-center gap-1.5 ${
                   activeTab === 'comments'
-                    ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-bold'
-                    : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    ? 'border-blue-600 text-blue-600 dark:text-[#388bfd] font-bold'
+                    : 'border-transparent text-slate-500 dark:text-[#9da7b3] hover:text-slate-900 dark:hover:text-[#e6edf3]'
                 }`}
               >
                 <MessageSquare className="w-3.5 h-3.5" /> Comments ({comments.length})
@@ -680,8 +680,8 @@ export const KanbanPage: React.FC = () => {
                 onClick={() => setActiveTab('history')}
                 className={`pb-2.5 border-b-2 transition-all flex items-center gap-1.5 ${
                   activeTab === 'history'
-                    ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400 font-bold'
-                    : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    ? 'border-blue-600 text-blue-600 dark:text-[#388bfd] font-bold'
+                    : 'border-transparent text-slate-500 dark:text-[#9da7b3] hover:text-slate-900 dark:hover:text-[#e6edf3]'
                 }`}
               >
                 <History className="w-3.5 h-3.5" /> Audit History ({history.length})
@@ -691,48 +691,48 @@ export const KanbanPage: React.FC = () => {
             {/* Tab Contents */}
             <div className="flex-1 overflow-y-auto pr-1">
               {activeTab === 'details' && (
-                <div className="space-y-4 text-xs text-slate-600 dark:text-slate-300">
+                <div className="space-y-4 text-xs text-slate-600 dark:text-[#9da7b3]">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block mb-1">
+                    <label className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
                       Description & Requirements
                     </label>
-                    <p className="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 p-3.5 rounded-xl text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
+                    <p className="bg-slate-50 dark:bg-[#1e1e1e] border border-slate-200 dark:border-[#2d2d2d] p-3.5 rounded-xl text-slate-800 dark:text-[#e6edf3] leading-relaxed whitespace-pre-wrap">
                       {activeTask.description || 'No description provided.'}
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-200 dark:border-[#2d2d2d]">
                     <div>
-                      <span className="text-slate-500 block mb-1">Assignee</span>
+                      <span className="text-slate-500 dark:text-slate-400 block mb-1">Assignee</span>
                       <div className="flex items-center gap-2">
                         <Avatar
                           src={activeTask.assignee?.avatar_url}
                           name={activeTask.assignee?.full_name || 'Unassigned'}
                           size="sm"
                         />
-                        <span className="font-semibold text-slate-900 dark:text-white">
+                        <span className="font-semibold text-slate-900 dark:text-[#e6edf3]">
                           {activeTask.assignee?.full_name || 'Unassigned'}
                         </span>
                       </div>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 block mb-1">Due Date</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">
+                      <span className="text-slate-500 dark:text-slate-400 block mb-1">Due Date</span>
+                      <span className="font-semibold text-slate-900 dark:text-[#e6edf3]">
                         {activeTask.due_date ? new Date(activeTask.due_date).toLocaleDateString() : 'None'}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 block mb-1">Estimated Hours</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">
+                      <span className="text-slate-500 dark:text-slate-400 block mb-1">Estimated Hours</span>
+                      <span className="font-semibold text-slate-900 dark:text-[#e6edf3]">
                         {activeTask.estimated_hours ? `${activeTask.estimated_hours} hrs` : 'Not specified'}
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 block mb-1">Created At</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">
+                      <span className="text-slate-500 dark:text-slate-400 block mb-1">Created At</span>
+                      <span className="font-semibold text-slate-900 dark:text-[#e6edf3]">
                         {new Date(activeTask.created_at).toLocaleDateString()}
                       </span>
                     </div>

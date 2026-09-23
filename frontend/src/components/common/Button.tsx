@@ -24,10 +24,10 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const variantStyles = {
-    primary: 'bg-brand-600 text-white hover:bg-brand-500 focus:ring-brand-500 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900',
-    secondary: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 focus:ring-slate-500 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900',
-    danger: 'bg-red-600 text-white hover:bg-red-500 focus:ring-red-500 focus:ring-offset-slate-100 dark:focus:ring-offset-slate-900',
-    ghost: 'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white focus:ring-slate-500',
+    primary: 'bg-blue-600 text-white hover:bg-blue-500 focus:ring-blue-500 focus:ring-offset-slate-100 dark:focus:ring-offset-[#1e1e1e]',
+    secondary: 'bg-slate-100 dark:bg-[#252526] text-slate-700 dark:text-[#e6edf3] hover:bg-slate-200 dark:hover:bg-[#2a2d2e] border border-slate-300 dark:border-[#3c3c3c] focus:ring-slate-500 focus:ring-offset-slate-100 dark:focus:ring-offset-[#1e1e1e]',
+    danger: 'bg-red-600 text-white hover:bg-red-500 focus:ring-red-500 focus:ring-offset-slate-100 dark:focus:ring-offset-[#1e1e1e]',
+    ghost: 'bg-transparent text-slate-600 dark:text-[#9da7b3] hover:bg-slate-100 dark:hover:bg-[#2a2d2e] hover:text-slate-900 dark:hover:text-[#e6edf3] focus:ring-slate-500',
   };
 
   return (

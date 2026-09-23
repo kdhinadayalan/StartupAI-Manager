@@ -65,23 +65,23 @@ export const CreateWorkspaceModal: React.FC = () => {
         }
       }}
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left text-slate-900 dark:text-slate-100">
+      <div className="bg-white dark:bg-[#252526] border border-slate-200 dark:border-[#2d2d2d] rounded-2xl w-full max-w-lg p-6 sm:p-7 shadow-2xl relative my-auto text-left text-slate-900 dark:text-[#e6edf3]">
         {/* Header */}
-        <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-5">
+        <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-[#2d2d2d] mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-[#388bfd] shrink-0">
               <Building2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">Initialize Company Workspace</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-[#e6edf3] leading-tight">Initialize Company Workspace</h3>
+              <p className="text-xs text-slate-500 dark:text-[#9da7b3] mt-0.5">
                 Set up the AI-powered operating system for your company and team
               </p>
             </div>
           </div>
           <button
             onClick={() => !isSubmitting && setIsCreateModalOpen(false)}
-            className="text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+            className="text-slate-400 hover:text-slate-700 dark:hover:text-[#e6edf3] transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-[#2a2d2e]"
             title="Close"
           >
             <X className="w-5 h-5" />
@@ -118,13 +118,13 @@ export const CreateWorkspaceModal: React.FC = () => {
             />
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-[#9da7b3] mb-1.5">
                 Base Currency
               </label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
-                className="w-full px-3 py-2 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full px-3 py-2 bg-white dark:bg-[#1e1e1e] border border-slate-300 dark:border-[#3c3c3c] rounded-lg text-slate-900 dark:text-[#e6edf3] text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="INR">INR (₹)</option>
                 <option value="USD">USD ($)</option>
@@ -136,11 +136,11 @@ export const CreateWorkspaceModal: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-[#9da7b3] mb-1.5">
               Description & Mission
             </label>
             <textarea
-              className="w-full px-3.5 py-2.5 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-1 focus:ring-brand-500"
+              className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1e1e1e] border border-slate-300 dark:border-[#3c3c3c] rounded-lg text-slate-900 dark:text-[#e6edf3] placeholder-slate-400 dark:placeholder-[#6e7681] text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
               rows={3}
               placeholder="Describe your company's core vision and deliverables..."
               value={description}
@@ -148,7 +148,7 @@ export const CreateWorkspaceModal: React.FC = () => {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-[#2d2d2d]">
             <Button
               variant="ghost"
               size="sm"

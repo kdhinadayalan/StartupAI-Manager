@@ -136,3 +136,27 @@ class Approval(Base, TimestampMixin):
     # Relationships
     agent_run: Mapped["AIAgentRun"] = relationship("AIAgentRun", back_populates="approvals")
     reviewed_by: Mapped[Optional["User"]] = relationship("User")
+
+
+class WorkspaceAISettings(Base, TimestampMixin):
+    """
+    Configuration for Workspace AI Provider, model selection, BYOK API keys,
+    and private Local Ollama endpoints with zero-data-leakage settings.
+    """
+    __tablename__ = "workspace_ai_settings"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=generate_uuid)
+    workspace_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("workspaces.id", ondelete="CASCADE"), nullable=False, unique=True, index=True
+    )
+    provider: Mapped[str] = mapped_column(String(50), default="MOCK", nullable=False)  # GEMINI, OPENAI, OLLAMA, MOCK
+    model_name: Mapped[str] = mapped_column(String(100), default="startupai-mock-v1", nullable=False)
+    api_key: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)  # Custom corporate API key
+    ollama_base_url: Mapped[str] = mapped_column(String(255), default="http://localhost:11434", nullable=False)
+    custom_base_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    temperature: Mapped[float] = mapped_column(Float, default=0.2, nullable=False)
+    pii_masking_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+
+    # Relationships
+    workspace: Mapped["Workspace"] = relationship("Workspace")
+

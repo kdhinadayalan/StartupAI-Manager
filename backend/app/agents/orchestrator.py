@@ -1,11 +1,12 @@
 import json
+import re
 import time
 import uuid
 import logging
 from typing import Any, Dict, List, Optional
 from sqlalchemy.orm import Session
 
-from app.agents.provider import get_ai_provider
+from app.agents.provider import get_ai_provider, get_workspace_ai_provider
 from app.agents.prompt_defense import sanitize_user_prompt, build_secure_agent_prompt, filter_sensitive_context
 from app.agents.task_agent import TaskAgent
 from app.agents.report_agent import ReportAgent
@@ -14,7 +15,7 @@ from app.agents.marketing_agent import MarketingAgent
 from app.agents.research_agent import ResearchAgent
 from app.agents.risk_agent import RiskAgent
 from app.tools.registry import ai_tool_registry
-from app.models.ai import AIAgentRun, AgentRunStatus, RiskLevel
+from app.models.ai import AIAgentRun, AgentRunStatus, RiskLevel, WorkspaceAISettings
 from app.models.workspace import WorkspaceMember
 from app.services.workspace_service import get_member_membership
 from app.services.audit_service import log_audit_event
@@ -196,14 +197,27 @@ BEHAVIORAL DIRECTIVES:
                 tool_results.append({tool_name: result})
                 context_data[tool_name] = result.get("result")
 
-        # Step 5: Consult AI Provider with verified backend data
+        # Step 5: Consult Workspace-configured AI Provider with verified backend data
+        ws_ai_settings = (
+            db.query(WorkspaceAISettings)
+            .filter(WorkspaceAISettings.workspace_id == workspace_id)
+            .first()
+        )
+        context_payload = filter_sensitive_context(context_data)
+        context_str = json.dumps(context_payload)
+
+        # If PII masking is enabled and using an external cloud provider, scrub email addresses
+        if ws_ai_settings and ws_ai_settings.pii_masking_enabled and ws_ai_settings.provider.upper() in ["GEMINI", "OPENAI"]:
+            context_str = re.sub(r'[\w\.-]+@[\w\.-]+\.\w+', '[CONFIDENTIAL_EMAIL]', context_str)
+
         prompt = build_secure_agent_prompt(
             system_instructions=self.SYSTEM_PROMPT,
             user_query=clean_query,
-            data_context=json.dumps(filter_sensitive_context(context_data)),
+            data_context=context_str,
         )
 
-        ai_response = await self.provider.generate(
+        workspace_provider = get_workspace_ai_provider(db, workspace_id)
+        ai_response = await workspace_provider.generate(
             prompt=prompt,
             system_prompt=self.SYSTEM_PROMPT,
         )

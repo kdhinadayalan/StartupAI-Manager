@@ -14,13 +14,13 @@ export const Navbar: React.FC = () => {
   const { toggleOpen } = useSidebar();
 
   return (
-    <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-colors duration-150">
+    <header className="h-16 border-b border-slate-200 dark:border-[#2d2d2d] bg-white/95 dark:bg-[#1e1e1e]/95 backdrop-blur px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-colors duration-150">
       <div className="flex items-center gap-3 sm:gap-6">
         {/* Mobile / Desktop Hamburger Menu Trigger */}
         <button
           onClick={toggleOpen}
           aria-label="Toggle navigation drawer"
-          className="p-2 -ml-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+          className="p-2 -ml-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:text-[#9da7b3] dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#2a2d2e] transition-colors focus:outline-none focus:ring-2 focus:ring-[#007acc]/40"
           title="Toggle Navigation Menu"
         >
           <Menu className="w-5 h-5" />
@@ -49,10 +49,10 @@ export const Navbar: React.FC = () => {
         <NotificationBell />
 
         {user && (
-          <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800">
+          <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-[#2d2d2d]">
             <Link
               to="/settings"
-              className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
+              className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-[#2a2d2e] transition-colors group"
               title="View & Edit Profile"
             >
               <Avatar

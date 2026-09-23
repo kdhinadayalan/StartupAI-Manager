@@ -64,3 +64,46 @@ class AgentTelemetryResponse(BaseModel):
     status_distribution: Optional[Dict[str, int]] = None
     tool_usage: Optional[List[Dict[str, Any]]] = None
     recent_executions: Optional[List[Dict[str, Any]]] = None
+
+
+class WorkspaceAISettingsResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    workspace_id: str
+    provider: str
+    model_name: str
+    has_custom_api_key: bool = False
+    masked_api_key: Optional[str] = None
+    ollama_base_url: str = "http://localhost:11434"
+    custom_base_url: Optional[str] = None
+    temperature: float = 0.2
+    pii_masking_enabled: bool = True
+    updated_at: Optional[datetime] = None
+
+
+class WorkspaceAISettingsUpdate(BaseModel):
+    provider: Optional[str] = Field(None, description="GEMINI, OPENAI, OLLAMA, MOCK, CUSTOM")
+    model_name: Optional[str] = Field(None, max_length=100)
+    api_key: Optional[str] = Field(None, max_length=255)
+    ollama_base_url: Optional[str] = Field(None, max_length=255)
+    custom_base_url: Optional[str] = Field(None, max_length=255)
+    temperature: Optional[float] = Field(None, ge=0.0, le=1.0)
+    pii_masking_enabled: Optional[bool] = None
+
+
+class TestAIConnectionRequest(BaseModel):
+    provider: str = Field(..., description="GEMINI, OPENAI, OLLAMA, MOCK, CUSTOM")
+    model_name: Optional[str] = None
+    api_key: Optional[str] = None
+    ollama_base_url: Optional[str] = None
+    custom_base_url: Optional[str] = None
+
+
+class TestAIConnectionResponse(BaseModel):
+    status: str = Field(..., description="'connected' or 'error'")
+    latency_ms: int
+    provider: str
+    model_name: str
+    message: str
+    details: Optional[Dict[str, Any]] = None
+

@@ -3,38 +3,69 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --card-bg: #ffffff;
+    --card-fg: #0f172a;
+    --muted-bg: #f1f5f9;
+    --muted-fg: #475569;
+    --border-color: #e2e8f0;
+    --foreground-color: #0f172a;
+  }
+
+  .dark {
+    --card-bg: #252526;
+    --card-fg: #e6edf3;
+    --muted-bg: #2a2d2e;
+    --muted-fg: #9da7b3;
+    --border-color: #2d2d2d;
+    --foreground-color: #e6edf3;
+  }
+
   body {
-    @apply min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-200;
+    @apply min-h-screen bg-[#f8fafc] text-[#0f172a] dark:bg-[#1e1e1e] dark:text-[#e6edf3] font-sans antialiased transition-colors duration-150;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  /* High contrast text selection like VS Code */
+  ::selection {
+    background-color: #007acc40;
+    color: inherit;
+  }
+
+  .dark ::selection {
+    background-color: #264f78;
+    color: #ffffff;
   }
 }
 
-/* Custom scrollbar */
+/* VS Code Minimalist Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.8);
-}
-
-.dark ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.9);
-  border-radius: 9999px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.8);
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 1);
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 4px;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 1);
+  background: #4f4f4f;
+}
+
+.dark ::-webkit-scrollbar-thumb:active {
+  background: #007acc;
 }

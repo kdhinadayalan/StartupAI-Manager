@@ -19,6 +19,46 @@ export interface ChatResponsePayload {
   execution_time_ms: number;
 }
 
+export interface WorkspaceAISettingsResponse {
+  workspace_id: string;
+  provider: 'GEMINI' | 'OPENAI' | 'OLLAMA' | 'MOCK' | 'CUSTOM' | string;
+  model_name: string;
+  has_custom_api_key: boolean;
+  masked_api_key?: string | null;
+  ollama_base_url: string;
+  custom_base_url?: string | null;
+  temperature: number;
+  pii_masking_enabled: boolean;
+  updated_at?: string;
+}
+
+export interface WorkspaceAISettingsUpdate {
+  provider?: string;
+  model_name?: string;
+  api_key?: string;
+  ollama_base_url?: string;
+  custom_base_url?: string;
+  temperature?: number;
+  pii_masking_enabled?: boolean;
+}
+
+export interface TestAIConnectionRequest {
+  provider: string;
+  model_name?: string;
+  api_key?: string;
+  ollama_base_url?: string;
+  custom_base_url?: string;
+}
+
+export interface TestAIConnectionResponse {
+  status: 'connected' | 'error';
+  latency_ms: number;
+  provider: string;
+  model_name: string;
+  message: string;
+  details?: Record<string, any>;
+}
+
 export const aiApi = {
   chat: async (
     workspaceId: string,
@@ -58,4 +98,32 @@ export const aiApi = {
   getMonitoring: async (workspaceId: string): Promise<AgentTelemetry> => {
     return apiClient.request<AgentTelemetry>(`/workspaces/${workspaceId}/ai/monitoring`);
   },
+
+  getSettings: async (workspaceId: string): Promise<WorkspaceAISettingsResponse> => {
+    return apiClient.request<WorkspaceAISettingsResponse>(`/workspaces/${workspaceId}/ai/settings`);
+  },
+
+  updateSettings: async (
+    workspaceId: string,
+    data: WorkspaceAISettingsUpdate
+  ): Promise<WorkspaceAISettingsResponse> => {
+    return apiClient.request<WorkspaceAISettingsResponse>(`/workspaces/${workspaceId}/ai/settings`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  testConnection: async (
+    workspaceId: string,
+    data: TestAIConnectionRequest
+  ): Promise<TestAIConnectionResponse> => {
+    return apiClient.request<TestAIConnectionResponse>(
+      `/workspaces/${workspaceId}/ai/settings/test-connection`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    );
+  },
 };
+
